@@ -1,14 +1,25 @@
 package world;
 
 import java.util.ArrayList;
+import java.util.Random;
 
+import org.newdawn.slick.Color;
+
+import kn.uni.voronoitreemap.datastructure.OpenList;
+import kn.uni.voronoitreemap.diagram.PowerDiagram;
+import kn.uni.voronoitreemap.j2d.PolygonSimple;
+import kn.uni.voronoitreemap.j2d.Site;
 import util.SimplexNoise;
 
 public class DiagramMap {
 	private double sX = 96;
 	private double sY = 96;
 	private double scale = 0.25;
-	//private double eScale = 0.02;
+	private int rivers = 10;
+	private int floydRelax = 15;
+	private int points = 450;
+	private int width = 256;
+	private int height = 256;
 	private int[][][] tileMap = new int[256][256][64];
 	private double[][] eMap = new double[256][256];
 	private boolean[][] river = new boolean[256][256];
@@ -16,11 +27,156 @@ public class DiagramMap {
 	private ArrayList<Corner> corners = new ArrayList<Corner>();
 	private ArrayList<Edge> edges = new ArrayList<Edge>();
 	
-	public DiagramMap() {
-		
+	private SimplexNoise noise;
+	
+	public DiagramMap(SimplexNoise noise) {
+		this.noise = noise;
 	}
 	
-	public void computeTilesNoise(SimplexNoise noise) {
+	public void generate() {
+		
+		computeDiagram();
+		computeTiles();
+	}
+	
+	private void computeDiagram() {
+		PowerDiagram diagram = new PowerDiagram();
+		OpenList sites = new OpenList();
+		
+		Random rand = new Random(noise.seed());
+		Random riverRand = new Random(noise.seed());
+		
+		PolygonSimple rootPolygon = new PolygonSimple();
+		
+		rootPolygon.add(0, 0);
+		rootPolygon.add(width, 0);
+		rootPolygon.add(width, height);
+		rootPolygon.add(0, height);
+
+		for (int i = 0; i < points; i++) {
+			Site site = new Site(rand.nextInt(width-16)+8, rand.nextInt(width-16)+8);
+			sites.add(site);
+		}
+
+		diagram.setSites(sites);
+
+		diagram.setClipPoly(rootPolygon);
+
+		diagram.computeDiagram();
+
+		for(int i = 0; i < floydRelax; i++) {
+			OpenList relaxedSites = new OpenList();
+			for(int j = 0; j < points; j++) {
+				if(sites.array[j] == null) {
+					continue;
+				}
+				PolygonSimple p = sites.array[j].getPolygon();
+				if(p == null) {
+					continue;
+				}
+				relaxedSites.add(new Site(p.getCentroid().getX(), p.getCentroid().getY()));
+			}
+
+			sites = relaxedSites;
+
+			diagram.setSites(sites);
+			diagram.computeDiagram();
+		}
+
+		for (int i = 0; i < points; i++) {
+			new MapCell(sites.array[i], this);
+			if(sites.array[i] == null) {
+				continue;
+			}
+		}
+
+		for(MapCell mC : cells) {
+			mC.genNoise(noise);
+		}
+
+		for(Corner c : getCorners()) {
+			c.findLowest();
+			c.checkWater();
+		}
+
+		for(int i = 0 ; i < rivers; i++) {
+			ArrayList<Edge> visitedr = new ArrayList<Edge>();
+
+			Corner end = null;
+			Corner river = null;
+			while(river == null || river.coast() || river.river() > 0) {
+				river = getCorners().get(riverRand.nextInt(getCorners().size()));
+			}
+
+			boolean fail = false;
+
+			while(!river.coast()) {
+				if(river.lowest() == null || visitedr.contains(river.lowest())) {
+					fail = true;
+					break;
+				}
+				river.lowest().addWater(1);
+				river.lowest().p1().addRiver();
+				river.lowest().p2().addRiver();
+				visitedr.add(river.lowest());
+				river = river.lowest().otherEnd(river);
+
+			}
+
+			end = river;
+
+			if(!end.coast()) {
+				fail = true;
+			}
+
+			if(fail) {
+				for(Edge e : visitedr) {
+					e.addWater(-1);
+					e.p1().removeRiver();
+					e.p2().removeRiver();
+				}
+			}
+
+		}
+
+		Site first = null;
+
+		for(int i = 0; i < points; i++) {
+			if(sites.array[i] == null) continue;
+			if(sites.array[i].getPolygon().getBounds().x <= 1 ||
+					sites.array[i].getPolygon().getBounds().y <= 1) {
+				first = sites.array[i];
+				break;
+			}
+		}
+
+		if(first == null) return;
+
+		ArrayList<Site> visited = new ArrayList<Site>();
+		ArrayList<Site> frontier = new ArrayList<Site>();
+
+		frontier.add(first);
+
+		while(frontier.size() > 0) {
+			Site current = frontier.get(0);
+			visited.add(current);
+			frontier.remove(0);
+			for(MapCell mC : cells) {
+				if(mC.site == current) {
+					if(mC.biome != 3) break;
+					mC.biome = 0;
+					mC.color = Color.blue.darker();
+					for(Site s : current.getNeighbours()) {
+						if(visited.contains(s) || frontier.contains(s)) continue;
+						frontier.add(s);
+					}
+					break;
+				}
+			}
+		}
+	}
+	
+	private void computeTiles() {
 		for(int i = 0; i < tileMap.length; i++) {
 			for(int j = 0; j < tileMap[0].length; j++) {
 				double x = sX + i*scale;
@@ -44,12 +200,12 @@ public class DiagramMap {
 					}
 				}
 				if(parent != null) {
-					Edge edge = parent.getClosestEdge(x,y);
-					if(edge != null && edge.water > 0) {
+					Edge edge = getClosestEdge(x,y);
+					if(edge != null && edge.water() > 0) {
 						
 						double eDist = edge.distance(x, y)/* + 2.3*noise.generateSimplexNoise(x/3., y/3.)*/;
 						double base = 0.009/* + 0.0018*(noise.generateSimplexNoise(x/1.1, y/1.1))*/;
-						double eDistNoise = -1.+edge.water*0.6 + 2.9*(noise.generateSimplexNoise(x/3.1, y/3.1)+1);
+						double eDistNoise = -1.+edge.water()*0.6 + 2.9*(noise.generateSimplexNoise(x/3.1, y/3.1)+1);
 						if(eDistNoise <= 0.75) eDistNoise = 0.75;
 						double multi = eDist/eDistNoise;
 						
@@ -104,6 +260,24 @@ public class DiagramMap {
 				}
 			}
 		}
+	}
+	
+	private Edge getClosestEdge(double x, double y) {
+		double dist = 999999;
+		Edge close = null;
+		for(Edge e: getEdges()) {
+			if(e == null || e.water() == 0) {
+				continue;
+			}
+			double d = e.distance(x, y);
+			d /= 3.;
+			if(d < dist) {
+				close = e;
+				dist = d;
+			}
+		}
+		
+		return close;
 	}
 	
 	public ArrayList<MapCell> getCells(){

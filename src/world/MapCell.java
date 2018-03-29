@@ -71,7 +71,7 @@ public class MapCell {
 
 			if(!corners.contains(next)) {
 				corners.add(next);
-				next.parents.add(this);
+				next.parents().add(this);
 			}
 			if(!edges.contains(e)) {
 				edges.add(e);
@@ -85,19 +85,19 @@ public class MapCell {
 	public void genNoise(SimplexNoise simplex) {
 		double e = 0;
 		for(Corner c : corners) {
-			if(c.noise <= -98) {
-				double cE = simplex.generateSimplexNoise(c.loc.x/100., c.loc.y/100.)+1;
-				cE -= (simplex.generateSimplexNoise(c.loc.x/25., c.loc.y/25.)+1)*0.3;
+			if(c.noise() <= -98) {
+				double cE = simplex.generateSimplexNoise(c.x()/100., c.y()/100.)+1;
+				cE -= (simplex.generateSimplexNoise(c.x()/25., c.y()/25.)+1)*0.3;
 
 				double cX = 128;
 				double cY = 128;
-				double dist = Math.sqrt((c.loc.x-cX)*(c.loc.x-cX) + (c.loc.y-cY)*(c.loc.y-cY))/128.;
+				double dist = Math.sqrt((c.x()-cX)*(c.x()-cX) + (c.y()-cY)*(c.y()-cY))/128.;
 				double t1 = Math.max(0, 0.95-1.1*Math.pow(dist, 1.9));
 				cE *= t1;
 
-				c.noise = cE;
+				c.setNoise(cE);
 			}
-			e += c.noise;
+			e += c.noise();
 		}
 
 		e /= (double)corners.size();
@@ -112,24 +112,6 @@ public class MapCell {
 			biome = 2;
 			color = Color.gray.darker();
 		}
-	}
-
-	public Edge getClosestEdge(double x, double y) {
-		double dist = 999999;
-		Edge close = null;
-		for(Edge e: map.getEdges()) {
-			if(e == null || e.water == 0) {
-				continue;
-			}
-			double d = e.distance(x, y);
-			d /= 3.;
-			if(d < dist) {
-				close = e;
-				dist = d;
-			}
-		}
-		
-		return close;
 	}
 
 }

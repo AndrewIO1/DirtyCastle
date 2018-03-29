@@ -1,6 +1,8 @@
 package util;
 
 public class SimplexNoise { 
+	
+	private int seed;
 
 	private Gradient grad3[] = { new Gradient(1,1), new Gradient(-1,1), new Gradient(1,-1), new Gradient(-1,-1), 
 			new Gradient(1,0), new Gradient(-1,0), new Gradient(1,0), new Gradient(-1,0), 
@@ -27,11 +29,16 @@ public class SimplexNoise {
 	private final float G2 = (float) ((3 - Math.sqrt(3)) / 6); 
 
 	public SimplexNoise(int seed) { 
+		this.seed = seed;
 		for(int i = 0; i < 512; i++) { 
 			perm[i] = p[i + seed & 255]; 
 			permMod12[i] = (short) (perm[i] % 12); 
 		} 
-	}   
+	}
+	
+	public final int seed() {
+		return seed;
+	}
 
 	private static int fastFloor(double x) { 
 		int xi = (int) x; 

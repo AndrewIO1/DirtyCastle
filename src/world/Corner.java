@@ -4,13 +4,13 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 public class Corner {
-	ArrayList<MapCell> parents = new ArrayList<MapCell>();
-	public ArrayList<Edge> connections = new ArrayList<Edge>();
-	public Edge lowest;
-	public Point loc;
-	public boolean coast = false;
-	public int river = 0;
-	public double noise = -99;
+	private ArrayList<MapCell> parents = new ArrayList<MapCell>();
+	private ArrayList<Edge> connections = new ArrayList<Edge>();
+	private Edge lowest;
+	private Point loc;
+	private boolean coast = false;
+	private int river = 0;
+	private double noise = -99;
 	
 	public Corner(Point loc) {
 		this.loc = loc;
@@ -28,7 +28,7 @@ public class Corner {
 	
 	public boolean equals(Corner c) {
 		if(c == this) return true;
-		return c.loc.x == loc.x && c.loc.y == loc.y;
+		return c.x() == x() && c.y() == y();
 	}
 	
 	public void findLowest() {
@@ -46,12 +46,50 @@ public class Corner {
 			coast = true; 
 			return;
 		}
-		/*for(MapCell mC : parents) {
-			if(mC.biome == 0 || mC.biome == 3) {
-				coast = true;
-				return;
-			}
-		}*/
+	}
+	
+	public int river() {
+		return river;
+	}
+	
+	public void addRiver() {
+		river++;
+	}
+	
+	public void removeRiver() {
+		river--;
+	}
+	
+	public ArrayList<MapCell> parents(){
+		return parents;
+	}
+	
+	public ArrayList<Edge> connections(){
+		return connections;
+	}
+	
+	public Edge lowest() {
+		return lowest;
+	}
+	
+	public int x() {
+		return loc.x;
+	}
+	
+	public int y() {
+		return loc.y;
+	}
+	
+	public boolean coast() {
+		return coast;
+	}
+	
+	public double noise() {
+		return noise;
+	}
+	
+	public void setNoise(double noise) {
+		this.noise = noise;
 	}
 	
 }
