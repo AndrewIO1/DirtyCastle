@@ -13,6 +13,10 @@ public class Vertex {
 		this.cost = cost;
 	}
 	
+	public Vertex(int x, int y){
+		this(x,y,0);
+	}
+	
 	public Vertex(Vertex v){
 		this.x = v.x;
 		this.y = v.y;
