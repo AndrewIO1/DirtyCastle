@@ -12,9 +12,9 @@ import kn.uni.voronoitreemap.j2d.Site;
 import util.SimplexNoise;
 
 public class DiagramMap {
-	private double sX = 96;
-	private double sY = 96;
-	private double scale = 0.25;
+	private double sX = 0;
+	private double sY = 0;
+	private double scale = 1;
 	private int rivers = 10;
 	private int floydRelax = 15;
 	private int points = 450;
@@ -22,6 +22,7 @@ public class DiagramMap {
 	private int height = 256;
 	private int[][][] tileMap = new int[256][256][64];
 	private double[][] eMap = new double[256][256];
+	private int[][] bMap = new int[256][256];
 	private boolean[][] river = new boolean[256][256];
 	private ArrayList<MapCell> cells = new ArrayList<MapCell>();
 	private ArrayList<Corner> corners = new ArrayList<Corner>();
@@ -184,12 +185,8 @@ public class DiagramMap {
 				
 				double e = noise.generateSimplexNoise(x/100., y/100.)+1;
 				e -= (noise.generateSimplexNoise(x/25., y/25.)+1)*0.3;
-
-				double cX = 128;
-				double cY = 128;
-				double dist = Math.sqrt((x-cX)*(x-cX) + (y-cY)*(y-cY))/128.;
-				double t1 = Math.max(0, 0.95-1.1*Math.pow(dist, 1.9));
-				e *= t1;
+				
+				
 				
 				MapCell parent = null;
 				for(MapCell mC : cells) {
@@ -217,6 +214,7 @@ public class DiagramMap {
 				}
 				
 				eMap[i][j] = e;
+				bMap[i][j] = getBiome(x,y);
 			}
 		}
 		
@@ -231,9 +229,17 @@ public class DiagramMap {
 					
 					double e =  eMap[i][j];
 					
-					if(z <= 0) {
+					/*if(z <= 0) {
 						e = (e + (0.31-z*0.05))/2.;
 						//e += (e - 0.3+z*0.05)/2.;
+					}*/
+					
+					if(bMap[i][j] == 1) {
+						e = 0;
+					}else if(bMap[i][j] == 2) {
+						e = 0.3 + e/20.;
+					}else if(bMap[i][j] == 3) {
+						e = 0.3 + e/20.;
 					}
 					
 					if(e <= 0.3-z*0.05) {
@@ -270,7 +276,6 @@ public class DiagramMap {
 				continue;
 			}
 			double d = e.distance(x, y);
-			d /= 3.;
 			if(d < dist) {
 				close = e;
 				dist = d;
@@ -306,6 +311,44 @@ public class DiagramMap {
 	
 	public int depth() {
 		return tileMap[0][0].length;
+	}
+	
+	public double getElevation(double x, double y) {
+		double e = noise.generateSimplexNoise(x/100., y/100.)+1;
+		e -= (noise.generateSimplexNoise(x/25., y/25.)+1)*0.3;
+		return e;
+	}
+	
+	public double getMoisture(double x, double y) {
+		double m = noise.generateSimplexNoise(x/200.-256, y/200.-256)+1;
+		m += noise.generateSimplexNoise(x/25.-256, y/25.-256)+1;
+		m/=2.;
+		double cX = 128;
+		double cY = 128;
+		double dist = Math.sqrt((x-cX)*(x-cX) + (y-cY)*(y-cY))/128.;
+		double t1 = Math.max(0, 0.95-1.1*Math.pow(dist, 1.9));
+		m *= t1;
+		
+		return m;
+	}
+	
+	public double getTemperature(double x, double y) {
+		double t = noise.generateSimplexNoise(x/200. + 256, y/200. + 256)+1;
+		return t;
+	}
+	
+	public int getBiome(double x, double y) {
+		double m = getMoisture(x,y);
+		double t = getTemperature(x, y);
+		if(m <= 0.3) {
+			return 1; //Океан
+		}else {
+			if(t > 1.3) {
+				return 3; //Горы
+			}else {
+				return 2; //Равнины
+			}
+		}
 	}
 	
 }

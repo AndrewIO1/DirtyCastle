@@ -86,14 +86,16 @@ public class MapCell {
 		double e = 0;
 		for(Corner c : corners) {
 			if(c.noise() <= -98) {
-				double cE = simplex.generateSimplexNoise(c.x()/100., c.y()/100.)+1;
-				cE -= (simplex.generateSimplexNoise(c.x()/25., c.y()/25.)+1)*0.3;
-
-				double cX = 128;
-				double cY = 128;
-				double dist = Math.sqrt((c.x()-cX)*(c.x()-cX) + (c.y()-cY)*(c.y()-cY))/128.;
-				double t1 = Math.max(0, 0.95-1.1*Math.pow(dist, 1.9));
-				cE *= t1;
+				double cE = map.getElevation(c.x(), c.y());
+				double b = map.getBiome(c.x(),c.y());
+				
+				if(b == 1) {
+					e = 0;
+				}else if(b == 2) {
+					e = 0.3 + e/20.;
+				}else if(b == 3) {
+					e = 0.3 + e/20.;
+				}
 
 				c.setNoise(cE);
 			}
