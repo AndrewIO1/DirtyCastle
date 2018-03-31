@@ -16,7 +16,6 @@ import entities.Creature;
 import entities.EntityType;
 import entities.GameObject;
 import entities.creatures.TestCreature;
-import entities.static_objects.Tree;
 import graphics.Renderable;
 import util.EntityFactory;
 import util.PriorityQueue;
@@ -157,17 +156,18 @@ public class WorldMap {
 		return tiles[x][y][z].getGroupObject();
 	}
 
-	public void placeTile(int x, int y, int z, TILE_TYPE wall, TILE_TYPE floor, double moisture){
+	public void placeTile(int x, int y, int z, TILE_TYPE wall, TILE_TYPE floor){
 		//Ставит тайл в координаты, меняет вес тайла, если он непроходим
 		tiles[x][y][z] = new Tile(wall, floor, x, y, z);
 		if(!tilePassable(x,y,z)) {
 			tiles[x][y][z].setWeight(999);
 		}else {
-			if(moisture >= 0.3) {
+			tiles[x][y][z].setWeight(1);
+			/*if(moisture >= 0.3) {
 				Tree newTree = EntityFactory.generateTree(x*tileSize, y*tileSize, z);
 				allObjects.add(newTree);
 				//tiles[x][y][z].setObject(newTree);
-			}
+			}*/
 		}
 	}
 
@@ -589,6 +589,9 @@ public class WorldMap {
 				wallCorrection = -16;
 			}
 			g.fillRect(i*tileSize-cameraX, j*tileSize-cameraY + wallCorrection, tileSize, tileSize);
+			
+			/*g.setColor(Color.white);
+			g.drawString(tiles[i][j][0].toString(), 900, 300);*/
 		}
 
 		g.setColor(Color.white);

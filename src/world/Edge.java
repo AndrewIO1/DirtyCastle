@@ -4,6 +4,9 @@ import org.newdawn.slick.geom.Line;
 import org.newdawn.slick.geom.Vector2f;
 
 public class Edge {
+	private static Line line = new Line(0,0,0,0);
+	private static Vector2f v = new Vector2f(0,0);
+	
 	private Corner p1;
 	private Corner p2;
 	private double water = 0;
@@ -30,8 +33,9 @@ public class Edge {
 	}
 	
 	public double distance(double x, double y) {
-		Line line = new Line(p1.x(), p1.y(), p2.x(), p2.y());
-		return line.distanceSquared(new Vector2f((float)x,(float)y));
+		line.set(p1.x(), p1.y(), p2.x(), p2.y());
+		v.set((float)x,(float)y);
+		return line.distanceSquared(v);
 	}
 	
 	public Corner p1() {

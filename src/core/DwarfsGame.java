@@ -33,7 +33,7 @@ public class DwarfsGame extends StateBasedGame{
 		SoundSystem.getInstance().init();
 		this.addState(new GameState());
 		this.addState(new MapGenTestingState());
-		goToState(gc, TEST);
+		goToState(gc, GAME);
 	}
 	
 	public static void main(String[] args) {

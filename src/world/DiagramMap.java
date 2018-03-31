@@ -34,8 +34,11 @@ public class DiagramMap {
 		this.noise = noise;
 	}
 	
-	public void generate() {
+	public void generate(double centerX, double centerY, double scale) {
 		
+		sX = centerX;
+		sY = centerY;
+		this.scale = scale;
 		computeDiagram();
 		computeTiles();
 	}
@@ -266,6 +269,13 @@ public class DiagramMap {
 				}
 			}
 		}
+		
+		eMap = null;
+		bMap = null;
+		river = null;
+		cells = null;
+		corners = null;
+		edges = null;
 	}
 	
 	private Edge getClosestEdge(double x, double y) {

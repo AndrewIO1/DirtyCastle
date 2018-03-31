@@ -32,7 +32,7 @@ public class MapGenTestingState extends ExtendedState{
 
 	@Override
 	public void customLoad(GameContainer gc, StateBasedGame game) {
-		map.generate();
+		map.generate(0,0, 1);
 	}
 
 	@Override

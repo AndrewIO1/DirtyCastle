@@ -25,19 +25,25 @@ public class Tile implements Renderable{
 	private int z;
 
 	public static enum TILE_TYPE{
-		NONE(-1),
-		GRASS(0),
-		DIRT(1),
-		ROCK(2),
-		WATER(3);
+		NONE(-1, "Nothing"),
+		GRASS(0, "Grass"),
+		ROCK(1, "Rock"),
+		DIRT(2, "Dirt"),
+		WATER(3, "Water");
 		
 		private int type;
+		private String name;
 		
-		TILE_TYPE(int type){
+		TILE_TYPE(int type, String name){
 			this.type = type;
+			this.name = name;
 		}
 		
 		public int type() { return type; }
+		
+		public String toString() {
+			return name;
+		}
 	}
 
 	private int weight;
@@ -280,6 +286,10 @@ public class Tile implements Renderable{
 				getWall() == TILE_TYPE.NONE && 
 				getFloor() != TILE_TYPE.NONE &&
 				getFloor() != TILE_TYPE.WATER;
+	}
+	
+	public String toString() {
+		return "Wall: " + getWall() + " Floor: " + getFloor();
 	}
 
 }
