@@ -46,7 +46,7 @@ public class Tile implements Renderable{
 		}
 	}
 
-	private int weight;
+	//private int weight;
 	private TileGroup group;
 	private TILE_TYPE wallType;
 	private TILE_TYPE floorType;
@@ -58,7 +58,7 @@ public class Tile implements Renderable{
 	private Zone assignedZone;
 
 	public Tile(TILE_TYPE wallType, TILE_TYPE floorType, int x, int y, int z){
-		weight = 1;
+		//weight = 1;
 		this.wallType = wallType;
 		this.floorType = floorType;
 		group = WorldMap.getMap().groupManager().getGroup(-1);
@@ -112,9 +112,9 @@ public class Tile implements Renderable{
 		assignedZone = zone;
 	}
 
-	public int getWeight(){
+	/*public int getWeight(){
 		return weight;
-	}
+	}*/
 
 	public TILE_TYPE getWall(){
 		return wallType;
@@ -153,16 +153,16 @@ public class Tile implements Renderable{
 		setGroup(WorldMap.getMap().groupManager().getGroup(group));
 	}
 
-	public void setWeight(int weight){
+	/*public void setWeight(int weight){
 		this.weight = weight;
-	}
+	}*/
 
 	public void setObject(GameObject object){
-		if(object == null) {
+		/*if(object == null) {
 			weight = 0;
 		}else {
 			weight = 999;
-		}
+		}*/
 		this.staticObject = object;
 	}
 

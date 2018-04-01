@@ -3,8 +3,6 @@ package world;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.newdawn.slick.Color;
-
 import kn.uni.voronoitreemap.datastructure.OpenList;
 import kn.uni.voronoitreemap.diagram.PowerDiagram;
 import kn.uni.voronoitreemap.j2d.PolygonSimple;
@@ -20,7 +18,7 @@ public class DiagramMap {
 	private int points = 450;
 	private int width = 256;
 	private int height = 256;
-	private int[][][] tileMap = new int[256][256][64];
+	private int[][][] tileMap = new int[256][256][48];
 	private double[][] eMap = new double[256][256];
 	private int[][] bMap = new int[256][256];
 	private boolean[][] river = new boolean[256][256];
@@ -143,6 +141,7 @@ public class DiagramMap {
 
 		}
 
+		/*
 		Site first = null;
 
 		for(int i = 0; i < points; i++) {
@@ -177,7 +176,7 @@ public class DiagramMap {
 					break;
 				}
 			}
-		}
+		}*/
 	}
 	
 	private void computeTiles() {
@@ -228,7 +227,7 @@ public class DiagramMap {
 				for(int k = 0; k < tileMap[0][0].length; k++) {
 					
 					
-					double z = (k-32);
+					double z = (k-16);
 					
 					double e =  eMap[i][j];
 					

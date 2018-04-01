@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -33,6 +34,7 @@ public class GameState extends ExtendedState{
 	
 	private static boolean mouseInGui = false;
 	private static boolean lbmPressed = false;
+	private static boolean miniMapGenerated = false;
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame game) throws SlickException {
@@ -42,8 +44,6 @@ public class GameState extends ExtendedState{
 	public void customLoad(GameContainer gc, StateBasedGame game){
 		//При переходе в State
 		MapGenerator.generate(512, 464);//512 512
-		map = WorldMap.getMap();
-		gui = new Gui();
 
 		playerAction = NONE;
 		//TestCreature test = new TestCreature("TEST", 64, 64, 0, 3, 3, 0.5f, 0.5f, 1);
@@ -79,6 +79,17 @@ public class GameState extends ExtendedState{
 		//long time = System.currentTimeMillis();
 
 		try {
+			if(MapGenerator.generating() || !miniMapGenerated) {
+				g.setColor(Color.black);
+				g.fillRect(300, 390, 400, 40);
+				float p = MapGenerator.getProgress();
+				float mP = MapGenerator.getMaxProgress();
+				g.setColor(Color.green.darker());
+				g.fillRect(300, 390, 400f*p/mP, 40);
+				g.setColor(Color.white);
+				g.drawString("Generating tiles: " + MapGenerator.getProgress() + "/" + MapGenerator.getMaxProgress(), 310, 400);
+				return;
+			}
 			map.render(gc, game, g);
 			gui.render(gc, game, g);
 		}catch(Exception e) {
@@ -105,6 +116,14 @@ public class GameState extends ExtendedState{
 	public void customUpdate(GameContainer gc, StateBasedGame game, int delta) {
 
 		try {
+			if(MapGenerator.generating()) {
+				return;
+			}else if(!miniMapGenerated){
+				map = WorldMap.getMap();
+				gui = new Gui();
+				map.createMinimap();
+				miniMapGenerated = true;
+			}
 			mouseInGui = false;
 			lbmPressed = gc.getInput().isMousePressed(Input.MOUSE_LEFT_BUTTON);
 			gui.update(gc, game, delta);

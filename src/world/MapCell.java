@@ -3,8 +3,6 @@ package world;
 import java.awt.Point;
 import java.util.ArrayList;
 
-import org.newdawn.slick.Color;
-
 import kn.uni.voronoitreemap.j2d.PolygonSimple;
 import kn.uni.voronoitreemap.j2d.Site;
 import util.SimplexNoise;
@@ -18,7 +16,6 @@ public class MapCell {
 	ArrayList<Edge> edges = new ArrayList<Edge>();
 
 	public int biome = 3;
-	public Color color = Color.cyan.darker();
 
 	public MapCell(Site s, DiagramMap map) {
 		this.map = map;
@@ -106,13 +103,10 @@ public class MapCell {
 
 		if(e <= 0.3) {
 			biome = 3;
-			color = Color.cyan.darker();
 		}else if(e <= 0.8){
 			biome = 1;
-			color = Color.green.darker();
 		}else {
 			biome = 2;
-			color = Color.gray.darker();
 		}
 	}
 

@@ -44,6 +44,7 @@ public class WorldMap {
 	private MiniMap miniMap;
 	private int cameraX = 0;
 	private int cameraY = 0;
+	private int z = 16;
 
 
 	private int[] deltas;
@@ -115,6 +116,10 @@ public class WorldMap {
 	public int getHeight(){
 		return tiles[0].length;
 	}
+	
+	public int getDepth() {
+		return tiles[0][0].length;
+	}
 
 	public int getCameraX() {
 		return cameraX;
@@ -159,21 +164,30 @@ public class WorldMap {
 	public void placeTile(int x, int y, int z, TILE_TYPE wall, TILE_TYPE floor){
 		//Ставит тайл в координаты, меняет вес тайла, если он непроходим
 		tiles[x][y][z] = new Tile(wall, floor, x, y, z);
-		if(!tilePassable(x,y,z)) {
+		/*if(!tilePassable(x,y,z)) {
 			tiles[x][y][z].setWeight(999);
 		}else {
 			tiles[x][y][z].setWeight(1);
-			/*if(moisture >= 0.3) {
-				Tree newTree = EntityFactory.generateTree(x*tileSize, y*tileSize, z);
-				allObjects.add(newTree);
-				//tiles[x][y][z].setObject(newTree);
-			}*/
-		}
+			//if(moisture >= 0.3) {
+			//	Tree newTree = EntityFactory.generateTree(x*tileSize, y*tileSize, z);
+			//	allObjects.add(newTree);
+			//	//tiles[x][y][z].setObject(newTree);
+			//}
+		}*/
+	}
+	
+	public int getZ() {
+		return z;
 	}
 
 	public int getWeight(int x, int y, int z){
 		//Возвращает вес тайла по координатам (для нахождения пути)
-		return tiles[x][y][z].getWeight();
+		//return tiles[x][y][z].getWeight();
+		if(tilePassable(x,y,z)) {
+			return 1;
+		}else {
+			return 999;
+		}
 	}
 
 	public Task getFirstTypeTask(int x, int y, int z, int taskType){
@@ -223,7 +237,7 @@ public class WorldMap {
 	}
 
 	public void update(GameContainer gc, DwarfsGame game, int delta){
-
+		
 		if(gc.getInput().isKeyPressed(Input.KEY_E)) {
 			GameState.setAction(GameState.getAction() + 1);
 		}else if(gc.getInput().isKeyPressed(Input.KEY_Q)) {
@@ -251,7 +265,8 @@ public class WorldMap {
 				int y = (int) (needUpdate.get(i).getY()/32);
 				allObjects.remove(needUpdate.get(i));
 				needUpdate.remove(i);
-				miniMap.updateMiniMap(x,y,1,1);
+				//TODO исправить на нормальное
+				miniMap.updateMiniMap(x,y,16,1,1,1);
 				i--;
 				continue;
 			}
@@ -500,7 +515,7 @@ public class WorldMap {
 	}
 
 	public void render(GameContainer gc, StateBasedGame game, Graphics g){
-
+		
 		g.translate(-cameraX, -cameraY);
 		//Дальше карта
 
@@ -516,7 +531,7 @@ public class WorldMap {
 
 		for(int i = renderXStart; i < renderXEnd; i++) {
 			for(int j = renderYStart; j < renderYEnd; j++) {
-				renderQueue.add(tiles[i][j][0], tiles[i][j][0].getPriority());
+				renderQueue.add(tiles[i][j][z], tiles[i][j][z].getPriority());
 			}
 		}
 
@@ -624,7 +639,7 @@ public class WorldMap {
 	private static volatile WorldMap mapSingleton;
 	public static final int tileSize = 32;
 	
-	public static WorldMap createMap(Tile[][][] tileMap) {
+	public static synchronized WorldMap createMap(Tile[][][] tileMap) {
 		mapSingleton = new WorldMap(tileMap);
 		return mapSingleton;
 	}

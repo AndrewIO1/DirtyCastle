@@ -91,7 +91,8 @@ public class TaskWallBuild extends TaskConsumeItems {
 				if(progress >= progressMax) {
 					targetTile.setWall(wallType);
 					targetTile.consumeItems();
-					WorldMap.getMap().getMiniMap().updateMiniMap(targetTile.getX(), targetTile.getY(), 1, 1);
+					//TODO исправить на нормальное
+					WorldMap.getMap().getMiniMap().updateMiniMap(targetTile.getX(), targetTile.getY(), 16, 1, 1, 1);
 					obstacleConstructed(worker);
 
 					completed = true;
