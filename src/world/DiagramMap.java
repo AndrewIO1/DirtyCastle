@@ -1,6 +1,7 @@
 package world;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import kn.uni.voronoitreemap.datastructure.OpenList;
@@ -22,9 +23,9 @@ public class DiagramMap {
 	private double[][] eMap = new double[256][256];
 	private int[][] bMap = new int[256][256];
 	private boolean[][] river = new boolean[256][256];
-	private ArrayList<MapCell> cells = new ArrayList<MapCell>();
-	private ArrayList<Corner> corners = new ArrayList<Corner>();
-	private ArrayList<Edge> edges = new ArrayList<Edge>();
+	private List<MapCell> cells = new ArrayList<MapCell>();
+	private List<Corner> corners = new ArrayList<Corner>();
+	private List<Edge> edges = new ArrayList<Edge>();
 	
 	private SimplexNoise noise;
 	
@@ -102,7 +103,7 @@ public class DiagramMap {
 		}
 
 		for(int i = 0 ; i < rivers; i++) {
-			ArrayList<Edge> visitedr = new ArrayList<Edge>();
+			List<Edge> visitedr = new ArrayList<Edge>();
 
 			Corner end = null;
 			Corner river = null;
@@ -294,15 +295,15 @@ public class DiagramMap {
 		return close;
 	}
 	
-	public ArrayList<MapCell> getCells(){
+	public List<MapCell> getCells(){
 		return cells;
 	}
 	
-	public ArrayList<Corner> getCorners(){
+	public List<Corner> getCorners(){
 		return corners;
 	}
 	
-	public ArrayList<Edge> getEdges(){
+	public List<Edge> getEdges(){
 		return edges;
 	}
 	

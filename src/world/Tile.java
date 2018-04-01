@@ -1,6 +1,7 @@
 package world;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -51,10 +52,10 @@ public class Tile implements Renderable{
 	private TILE_TYPE wallType;
 	private TILE_TYPE floorType;
 	private GameObject staticObject;
-	private ArrayList<MovableObject> itemPile;
-	private ArrayList<Task> tileTasks;
-	private ArrayList<Path> partOfPaths;
-	private ArrayList<Creature> creaturesInside;
+	private List<MovableObject> itemPile;
+	private List<Task> tileTasks;
+	private List<Path> partOfPaths;
+	private List<Creature> creaturesInside;
 	private Zone assignedZone;
 
 	public Tile(TILE_TYPE wallType, TILE_TYPE floorType, int x, int y, int z){

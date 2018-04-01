@@ -1,6 +1,7 @@
 package world.tile_groups;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import world.Tile;
 
@@ -8,7 +9,7 @@ public class TileGroup {
 	private static int lastID = -2;
 
 	private int id;
-	private ArrayList<Tile> tiles;
+	private List<Tile> tiles;
 
 	public TileGroup() {
 		tiles = new ArrayList<Tile>();
@@ -45,12 +46,12 @@ public class TileGroup {
 		tiles.remove(tile);
 	}
 
-	public ArrayList<Tile> getTiles(){
+	public List<Tile> getTiles(){
 		return tiles;
 	}
 
 	public void consume(TileGroup another) {
-		ArrayList<Tile> newTiles = another.getTiles();
+		List<Tile> newTiles = another.getTiles();
 		for(int i = 0; i < newTiles.size();i++) {
 			newTiles.get(i).setGroup(this);
 			i--;

@@ -1,13 +1,14 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
 
 public abstract class GuiContext {
-	protected ArrayList<GuiElement> elements;
+	protected List<GuiElement> elements;
 	
 	public GuiContext() {
 		elements = new ArrayList<GuiElement>();

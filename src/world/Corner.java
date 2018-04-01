@@ -2,10 +2,11 @@ package world;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Corner {
-	private ArrayList<MapCell> parents = new ArrayList<MapCell>();
-	private ArrayList<Edge> connections = new ArrayList<Edge>();
+	private List<MapCell> parents = new ArrayList<MapCell>();
+	private List<Edge> connections = new ArrayList<Edge>();
 	private Edge lowest;
 	private Point loc;
 	private boolean coast = false;
@@ -60,11 +61,11 @@ public class Corner {
 		river--;
 	}
 	
-	public ArrayList<MapCell> parents(){
+	public List<MapCell> parents(){
 		return parents;
 	}
 	
-	public ArrayList<Edge> connections(){
+	public List<Edge> connections(){
 		return connections;
 	}
 	

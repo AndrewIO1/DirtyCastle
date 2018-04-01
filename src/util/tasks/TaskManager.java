@@ -2,6 +2,7 @@ package util.tasks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import ai.AI;
 import entities.EntityType;
@@ -24,12 +25,12 @@ public class TaskManager {
 		return managerSingleton;
 	}
 
-	private HashMap<String, ArrayList<Task>> tasks;
+	private HashMap<String, List<Task>> tasks;
 	private WorldMap map;
 
 	private TaskManager() {
 		map = WorldMap.getMap();
-		tasks = new HashMap<String, ArrayList<Task>>();
+		tasks = new HashMap<String, List<Task>>();
 		tasks.put("treeCutting", new ArrayList<Task>());
 		tasks.put("tileMining", new ArrayList<Task>());
 		tasks.put("itemMoving", new ArrayList<Task>());
@@ -42,7 +43,7 @@ public class TaskManager {
 		tasks.get("treeCutting").add(treeTask);
 	}
 
-	public ArrayList<Task> getTrees(){
+	public List<Task> getTrees(){
 		return tasks.get("treeCutting");
 	}
 

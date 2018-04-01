@@ -1,6 +1,6 @@
 package world;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
@@ -84,7 +84,7 @@ public class MiniMap {
 		Color selectedTreeColor = new Color(Color.pink);
 		selectedTreeColor.a = 0.5f;
 		g.setColor(selectedTreeColor);
-		ArrayList<Task> treeTasks = TaskManager.getInstance().getTrees();
+		List<Task> treeTasks = TaskManager.getInstance().getTrees();
 		for(int i = 0; i < treeTasks.size(); i++) {
 			g.fillRect(x + treeTasks.get(i).getTargets().get(0).getX()/32,
 					y + treeTasks.get(i).getTargets().get(0).getY()/32, 

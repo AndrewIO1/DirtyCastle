@@ -1,6 +1,7 @@
 package world;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
@@ -34,10 +35,10 @@ import world.zones.ZoneManager;
 public class WorldMap {
 	private volatile Tile[][][] tiles;
 	//Тайлы
-	private volatile ArrayList<GameObject> allObjects;
-	private volatile ArrayList<Creature> creatures;
+	private volatile List<GameObject> allObjects;
+	private volatile List<Creature> creatures;
 	//Тут вообще все объекты
-	private volatile ArrayList<GameObject> needUpdate;
+	private volatile List<GameObject> needUpdate;
 	//Тут объекты, которые нужно обновлять (растущие деревья, например)
 	private volatile GroupManager groupManager;
 	private volatile ZoneManager zoneManager;
@@ -96,11 +97,11 @@ public class WorldMap {
 		addObject(object, false);
 	}
 
-	public ArrayList<Creature> getCreatures() {
+	public List<Creature> getCreatures() {
 		return creatures;
 	}
 
-	public ArrayList<GameObject> getAllObjects(){
+	public List<GameObject> getAllObjects(){
 		return allObjects;
 	}
 
@@ -564,7 +565,7 @@ public class WorldMap {
 
 			if(creatures.get(i).getAI().getPath() != null) {
 				g.setColor(Color.cyan);
-				ArrayList<Vertex> path = creatures.get(i).getAI().getPath().getPoints();
+				List<Vertex> path = creatures.get(i).getAI().getPath().getPoints();
 				for(int j = 0; j < path.size()-1; j++) {
 					g.drawLine(path.get(j).getX(), path.get(j).getY(), path.get(j+1).getX(), path.get(j+1).getY());
 					g.drawRect(path.get(j+1).getX()-4, path.get(j+1).getY()-4, 9, 9);

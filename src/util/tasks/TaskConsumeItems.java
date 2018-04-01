@@ -1,6 +1,6 @@
 package util.tasks;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import entities.EntityType;
 import entities.MovableObject;
@@ -9,9 +9,9 @@ import world.WorldMap;
 import world.zones.StorageZone;
 
 public abstract class TaskConsumeItems extends Task{
-	protected ArrayList<BuildingItemRequirement> itemsNeeded;
+	protected List<BuildingItemRequirement> itemsNeeded;
 	
-	public TaskConsumeItems(Tile target, ArrayList<BuildingItemRequirement> items, int type) {
+	public TaskConsumeItems(Tile target, List<BuildingItemRequirement> items, int type) {
 		super(target, type);
 		
 		itemsNeeded = items;
@@ -60,7 +60,7 @@ public abstract class TaskConsumeItems extends Task{
 			
 			if(itemCarry != null) return itemCarry;
 			
-			ArrayList<StorageZone> storages = WorldMap.getZoneManager().getStorages();
+			List<StorageZone> storages = WorldMap.getZoneManager().getStorages();
 			for(int j = 0; j < storages.size(); j++) {
 				MovableObject freeItem = storages.get(i).findItem(type, var);
 				

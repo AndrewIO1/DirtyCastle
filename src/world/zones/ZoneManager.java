@@ -1,12 +1,13 @@
 package world.zones;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import entities.MovableObject;
 import world.WorldMap;
 
 public class ZoneManager {
-	private ArrayList<StorageZone> storages;
+	private List<StorageZone> storages;
 	private WorldMap map;
 	
 	public static void createInstance(WorldMap map) {
@@ -41,7 +42,7 @@ public class ZoneManager {
 		return null;
 	}
 	
-	public ArrayList<StorageZone> getStorages(){
+	public List<StorageZone> getStorages(){
 		return storages;
 	}
 }

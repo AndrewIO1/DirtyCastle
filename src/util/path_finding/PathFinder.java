@@ -1,6 +1,7 @@
 package util.path_finding;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ai.AI;
 import ai.Path;
@@ -21,7 +22,7 @@ public class PathFinder extends Thread {
 	private int NoneCost;
 	private Vertex from;
 	private PriorityQueue<Vertex> now;
-	private ArrayList<Vertex> come_from;
+	private List<Vertex> come_from;
 	private float[][] costs;
 	private boolean alive;
 	private volatile boolean calculating;

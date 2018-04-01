@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -14,9 +15,9 @@ import util.DataPack;
 public abstract class GuiElement {
 	protected GuiContext context;
 	protected GuiElement parent;
-	protected ArrayList<GuiElement> child;
+	protected List<GuiElement> child;
 	protected Geometry geometry;
-	protected ArrayList<ArrayList<Image>> sprites;
+	protected List<List<Image>> sprites;
 	protected DataPack elementData;
 	
 	public GuiElement(Builder builder) {

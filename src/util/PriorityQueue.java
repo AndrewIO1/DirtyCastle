@@ -3,22 +3,22 @@ package util;
 public class PriorityQueue<T> {
 
 
-	Node<T> head;
+	Node head;
 	int size = 0;
 
 	public PriorityQueue(){
-		head = new Node<T>();
+		head = new Node();
 	}
 
 	public void add(T v, float f){
-		Node<T> cur = head;
+		Node cur = head;
 		while(cur.right != null){
 			if(cur.right.priority >= f){
 				break;
 			}
 			cur = cur.right;
 		}
-		cur.right = new Node<T>(v,f,cur,cur.right);
+		cur.right = new Node(v,f,cur,cur.right);
 		size++;
 	}
 
@@ -44,7 +44,7 @@ public class PriorityQueue<T> {
 	}
 
 	public void remove(int i) {
-		Node<T> cur = head;
+		Node cur = head;
 		int iter = 0;
 		while(cur.right != null && iter != i){
 			cur = cur.right;
@@ -64,7 +64,7 @@ public class PriorityQueue<T> {
 	}
 	
 	public void remove(T object) {
-		Node<T> cur = head;
+		Node cur = head;
 		while(cur.right != null && !cur.right.data.equals(object)){
 			cur = cur.right;
 		}
@@ -81,7 +81,7 @@ public class PriorityQueue<T> {
 	}
 
 	public T peek(int i){
-		Node<T> cur = head;
+		Node cur = head;
 		int iter = 0;
 		while(cur.right != null && iter != i){
 			cur = cur.right;
@@ -91,7 +91,7 @@ public class PriorityQueue<T> {
 	}
 
 	public boolean contains(T v){
-		Node<T> cur = head;
+		Node cur = head;
 		while(cur.right != null){
 			if(cur.right.data == v){
 				return true;
@@ -109,5 +109,28 @@ public class PriorityQueue<T> {
 		head.right.left = null;
 		head.right = null;
 		size = 0;
+	}
+	
+	
+	private class Node {
+		private T data;
+		@SuppressWarnings("unused")
+		//TODO возможно стоит убрать указатель на элемент слева
+		private Node left;
+		private Node right;
+		private float priority;
+
+		public Node(T data, float f, Node left, Node right){
+			this.data = data;
+			this.right = right;
+			this.left = left;
+			this.priority = f;
+		}
+
+		public Node(){
+			data = null;
+			left = null;
+			right = null;
+		}
 	}
 }

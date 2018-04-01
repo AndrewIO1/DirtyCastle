@@ -1,6 +1,7 @@
 package util.alerts;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AlertManager {
 	private static volatile AlertManager managerSingleton;
@@ -16,7 +17,7 @@ public class AlertManager {
 		return managerSingleton;
 	}
 	
-	private ArrayList<String> log;
+	private List<String> log;
 	private final int logSize = 10;
 	private boolean showLog = true;
 	
@@ -39,7 +40,7 @@ public class AlertManager {
 		log.add(message);
 	}
 	
-	public ArrayList<String> getLog(){
+	public List<String> getLog(){
 		return log;
 	}
 }

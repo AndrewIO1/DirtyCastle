@@ -2,6 +2,7 @@ package entities.creatures;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -15,7 +16,7 @@ import entities.EntityType;
 import graphics.TextureStorage;
 
 public class TestCreature extends Creature{
-	ArrayList<Image> additionalSprites;
+	List<Image> additionalSprites;
 
 	public TestCreature(Builder builder) {
 		super(builder);

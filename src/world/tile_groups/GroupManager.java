@@ -1,6 +1,7 @@
 package world.tile_groups;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import util.PriorityQueue;
 import util.Vertex;
@@ -11,7 +12,7 @@ public class GroupManager {
 
 	private TileGroup reachableWalls;
 	private TileGroup unreachableWalls;
-	private ArrayList<TileGroup> groups;
+	private List<TileGroup> groups;
 
 	private WorldMap map;
 	

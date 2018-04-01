@@ -1,6 +1,7 @@
 package util.path_finding;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ai.AI;
 import util.Vertex;
@@ -23,7 +24,7 @@ public class PathFinderManager {
 	}
 	
 	private PathFinder[] finders;
-	private ArrayList<PathFinderRequest> queue;
+	private List<PathFinderRequest> queue;
 	
 	private PathFinderManager() {
 		queue = new ArrayList<PathFinderRequest>();

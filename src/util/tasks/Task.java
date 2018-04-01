@@ -1,6 +1,7 @@
 package util.tasks;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ai.AI;
 import entities.GameObject;
@@ -18,8 +19,8 @@ public abstract class Task {
 	public static int id = 0;
 
 	protected int step = 0;
-	protected ArrayList<GameObject> targets;
-	protected ArrayList<Vertex> vertexes;
+	protected List<GameObject> targets;
+	protected List<Vertex> vertexes;
 	protected int type = -1;
 	protected Tile targetTile;
 	protected int taskTimer;
@@ -41,7 +42,7 @@ public abstract class Task {
 	}
 
 	public Task(GameObject target, int type) {
-		ArrayList<GameObject> newTargets = new ArrayList<GameObject>();
+		List<GameObject> newTargets = new ArrayList<GameObject>();
 		newTargets.add(target);
 		init(newTargets, new ArrayList<Vertex>(0), type);
 	}
@@ -51,7 +52,7 @@ public abstract class Task {
 		setTargetTile(target);
 	}
 
-	protected void init(ArrayList<GameObject> targets, ArrayList<Vertex> targets2, int type) {
+	protected void init(List<GameObject> targets, ArrayList<Vertex> targets2, int type) {
 		this.targets = targets;
 		this.type = type;
 		if(targets.size() > 0) {
@@ -179,7 +180,7 @@ public abstract class Task {
 		return type;
 	}
 
-	public final ArrayList<GameObject> getTargets(){
+	public final List<GameObject> getTargets(){
 		return targets;
 	}
 

@@ -1,6 +1,7 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -43,8 +44,8 @@ public abstract class GameObject implements Renderable {
 	protected boolean dead = false;
 	protected int variant;
 	
-	protected ArrayList<Task> objectTasks;
-	protected ArrayList<ArrayList<Image>> sprites;//все анимации
+	protected List<Task> objectTasks;
+	protected List<ArrayList<Image>> sprites;//все анимации
 	
 	protected WorldMap map;
 	

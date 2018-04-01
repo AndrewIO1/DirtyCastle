@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -10,13 +11,13 @@ import org.newdawn.slick.state.StateBasedGame;
 import util.DataPack;
 
 public class PageElement extends GuiElement{
-	ArrayList<ArrayList<GuiElement>> pages;
+	List<List<GuiElement>> pages;
 	int page = 0;
 	
 	public PageElement(Builder builder) {
 		super(builder);
 		
-		pages = new ArrayList<ArrayList<GuiElement>>();
+		pages = new ArrayList<List<GuiElement>>();
 		pages.add(new ArrayList<GuiElement>());
 	}
 

@@ -1,6 +1,7 @@
 package world.zones;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -18,9 +19,9 @@ public class StorageZone extends Zone{
 	protected int availableSpace;
 	protected int maxSpace;
 	
-	protected ArrayList<ItemAllowance> allowances;
+	protected List<ItemAllowance> allowances;
 	
-	protected ArrayList<MovableObject> storage;
+	protected List<MovableObject> storage;
 
 	public StorageZone(int x, int y, int width, int height) {
 		super(x, y, width, height);

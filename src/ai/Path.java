@@ -1,13 +1,14 @@
 package ai;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import util.Vertex;
 import world.Tile;
 import world.WorldMap;
 
 public class Path {
-	private ArrayList<Vertex> points;
+	private List<Vertex> points;
 	private static WorldMap map;
 	
 	public Path(){
@@ -81,7 +82,7 @@ public class Path {
 		return false;
 	}
 	
-	public ArrayList<Vertex> getPoints() {
+	public List<Vertex> getPoints() {
 		return points;
 	}
 }

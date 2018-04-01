@@ -1,6 +1,6 @@
 package util.tasks;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import ai.AI;
 import util.alerts.AlertManager;
@@ -16,7 +16,7 @@ public class TaskWallBuild extends TaskConsumeItems {
 
 	private TILE_TYPE wallType;
 
-	public TaskWallBuild(Tile target, ArrayList<BuildingItemRequirement> items, TILE_TYPE toBuild) {
+	public TaskWallBuild(Tile target, List<BuildingItemRequirement> items, TILE_TYPE toBuild) {
 		super(target, items, Task.WALL_BUILD);
 		wallType = toBuild;
 	}

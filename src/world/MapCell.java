@@ -2,6 +2,7 @@ package world;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 
 import kn.uni.voronoitreemap.j2d.PolygonSimple;
 import kn.uni.voronoitreemap.j2d.Site;
@@ -12,8 +13,8 @@ public class MapCell {
 	DiagramMap map;
 	public PolygonSimple poly;
 	public Site site;
-	ArrayList<Corner> corners = new ArrayList<Corner>();
-	ArrayList<Edge> edges = new ArrayList<Edge>();
+	List<Corner> corners = new ArrayList<Corner>();
+	List<Edge> edges = new ArrayList<Edge>();
 
 	public int biome = 3;
 
