@@ -206,7 +206,11 @@ public class Tile implements Renderable{
 		}
 		int x = this.x*WorldMap.tileSize;
 		int y = this.y*WorldMap.tileSize;
-		if(getWall() != TILE_TYPE.NONE) {
+		int renderZ = z - WorldMap.getMap().getZ();
+		if(z > 0) {
+			y += renderZ*16;
+		}
+		if(getWall() != TILE_TYPE.NONE || z != WorldMap.getMap().getZ()) {
 			Tile downTile = WorldMap.getMap().getTile(x/32, y/32+1, 0);
 			if(downTile == null || downTile.getWall() == TILE_TYPE.NONE) {
 				g.setColor(Color.darkGray);
@@ -217,7 +221,7 @@ public class Tile implements Renderable{
 		if(getFirstTypeTask(Task.TILE_MINE)!=null) {
 			g.drawImage(toRender, x, y, Color.yellow);
 		}else{
-			if(wallType != TILE_TYPE.NONE) {
+			if(wallType != TILE_TYPE.NONE || z != WorldMap.getMap().getZ()) {
 				g.drawImage(toRender, x, y, Color.darkGray);
 			}else{
 				g.drawImage(toRender, x, y);
@@ -244,7 +248,7 @@ public class Tile implements Renderable{
 
 	@Override
 	public int getPriority() {
-		int priority = y*WorldMap.tileSize-256;
+		int priority = y*WorldMap.tileSize-256 - z*16;
 		if(getWall() != TILE_TYPE.NONE) {
 			priority += 256;
 		}

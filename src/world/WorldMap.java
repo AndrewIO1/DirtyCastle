@@ -45,7 +45,7 @@ public class WorldMap {
 	private MiniMap miniMap;
 	private int cameraX = 0;
 	private int cameraY = 0;
-	private int z = 16;
+	private int z = 15;
 
 
 	private int[] deltas;
@@ -529,10 +529,18 @@ public class WorldMap {
 
 
 		PriorityQueue<Renderable> renderQueue = new PriorityQueue<Renderable>();
-
+		
+		Tile renderTile;
+		
 		for(int i = renderXStart; i < renderXEnd; i++) {
 			for(int j = renderYStart; j < renderYEnd; j++) {
-				renderQueue.add(tiles[i][j][z], tiles[i][j][z].getPriority());
+				for(int k = z; k < getDepth(); k++) {
+					renderTile = tiles[i][j][k];
+					if(renderTile.getRenderType() >= 0) {
+						renderQueue.add(renderTile, renderTile.getPriority());
+						break;
+					}
+				}
 			}
 		}
 
@@ -617,7 +625,7 @@ public class WorldMap {
 				"/" + PathFinderManager.getAllPathFinders(), 1000, 400);
 		g.drawString("Requests waiting: " + PathFinderManager.getInstance().requestNumber(), 1000, 430);
 		g.drawString("Villagers: " + creatures.size(), 1000, 460);
-		g.drawString("Selected tile: " + gc.getInput().getMouseX()/3 + " " + gc.getInput().getMouseY()/3, 1000, 490);
+		g.drawString("Selected tile: " + (gc.getInput().getMouseX()+cameraX)/tileSize + " " + (gc.getInput().getMouseY()+cameraY)/tileSize, 1000, 490);
 		g.drawString("Processors: " + Runtime.getRuntime().availableProcessors(), 1000, 520);
 
 		AlertManager aM = AlertManager.getInstance();
