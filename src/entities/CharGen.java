@@ -1,5 +1,6 @@
 package entities;
 
+import core.DwarfsGame;
 import entities.creatures.TestCreature;
 
 public class CharGen {
@@ -13,27 +14,34 @@ public class CharGen {
 		int sex =  1 + (int)(Math.random() * 2);
 		citizen.sex(sex);
 	}
+	
+	private static String[] maleFirstSyll = {"Vladi","Kosti","Brone","Kila", "Andre", "Meta", "Stan"};
+	private static String[] maleSecondSyll = {"slav","mir","don","var","gon"};
+	private static String[] fmaleFirstSyll = {"Stel", "Skal", "Flo", "Ka", "Si"};
+	private static String[] fmaleSecondSyll = {"mi", "la", "li", "den"};
+	private static String[] fmaleThirdSyll = {"cia", "na", "nia"};
 
 	private static void nameGen(TestCreature.Builder citizen) {
-		String[] MaleNames = {"Denis", "Andrew", "Nikolyasik"};
-		String[] FmaleNames = {"Sveta", "Sasha", "Marry"};
+		String name;
 		if (citizen.sex() == 1) {
-			int n = (int)(Math.random()*MaleNames.length);
-			citizen.name(MaleNames[n]) ;
+			name = maleFirstSyll[DwarfsGame.rnd.nextInt(maleFirstSyll.length)] + maleSecondSyll[DwarfsGame.rnd.nextInt(maleSecondSyll.length)];
 		}
 		else {
-			int n = (int)(Math.random()*FmaleNames.length);
-			citizen.name(FmaleNames[n]);
-		}
+			name = fmaleFirstSyll[DwarfsGame.rnd.nextInt(fmaleFirstSyll.length)] + fmaleSecondSyll[DwarfsGame.rnd.nextInt(fmaleSecondSyll.length)] + fmaleThirdSyll[DwarfsGame.rnd.nextInt(fmaleThirdSyll.length)];
+			}
+		citizen.name(name) ;
+		
 		
 	}
 	
+
 	private static void mainStatGen(TestCreature.Builder citizen) {
 		citizen.maxHp(100);
 		citizen.speed(0.1f);
 		citizen.str(10); //сила
 		citizen.intel(10); //ум
 		citizen.dex(10); //ловкость
+		citizen.mood(50); //настроение
 	}
 	
 	private static void bodyGen(TestCreature.Builder citizen) {

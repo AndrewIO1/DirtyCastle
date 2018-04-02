@@ -1,6 +1,7 @@
 package util;
 
 import core.DwarfsGame;
+import entities.CharGen;
 import entities.creatures.TestCreature;
 import entities.loot.Log;
 import entities.static_objects.LogBig;
@@ -38,17 +39,19 @@ public class EntityFactory {
 		return true;
 	}
 	
-	public static TestCreature generateTestCreature(int x, int y, int z) {
-		testCreatureCounter++;
+	public static TestCreature generateTestCreature(int x, int y, int z) { //основной генератор персонажей в игру. “ут создаЄтс€ новый сука перс
 		if(!check(x,y,z,"TEST " + testCreatureCounter)) {
 			return null;
 		}
-		TestCreature.Builder creature = new TestCreature.Builder("TEST " + testCreatureCounter);
-		creature.x(x).y(y).z(z);
+		
+		TestCreature.Builder creature = new TestCreature.Builder("CitizenID - " + testCreatureCounter); 
+		testCreatureCounter++;
+		creature.x(x).y(y).z(z); 
 		creature.width(32).height(32);
 		creature.x_anchor(0.5f).y_anchor(0.5f);
-		creature.map(map);
-		creature.mass(1);
+		creature.map(map); //где они наход€тс€
+		creature.mass(1); //масса ионна€
+		CharGen.charGen(creature);
 		return creature.build();
 	}
 	
