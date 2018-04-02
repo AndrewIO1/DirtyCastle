@@ -87,7 +87,7 @@ public class CharGen {
 
 
 	//мнбши цемепюрнп бшье, онйю реяр
-	//genirator 0.2
+	//genirator 0.3
 	public static TestCreature.Builder charGen(TestCreature.Builder citizen){
 		sexGen(citizen);
 		nameGen(citizen);
