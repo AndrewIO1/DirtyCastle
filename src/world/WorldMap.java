@@ -46,6 +46,8 @@ public class WorldMap {
 	private int cameraX = 0;
 	private int cameraY = 0;
 	private int z = 15;
+	
+	private PriorityQueue<Renderable> renderQueue;
 
 
 	private int[] deltas;
@@ -64,6 +66,7 @@ public class WorldMap {
 		deltas = new int[50];
 		GroupManager.createInstance(this);
 		ZoneManager.createInstance(this);
+		renderQueue = new PriorityQueue<Renderable>();
 	}
 
 	public GroupManager groupManager() {
@@ -528,7 +531,7 @@ public class WorldMap {
 
 
 
-		PriorityQueue<Renderable> renderQueue = new PriorityQueue<Renderable>();
+		renderQueue.clear();
 		
 		Tile renderTile;
 		

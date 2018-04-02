@@ -57,20 +57,26 @@ public class Tile implements Renderable{
 	private List<Path> partOfPaths;
 	private List<Creature> creaturesInside;
 	private Zone assignedZone;
+	private WorldMap map;
+	private int renderX;
+	private int renderY;
 
 	public Tile(TILE_TYPE wallType, TILE_TYPE floorType, int x, int y, int z){
 		//weight = 1;
+		map = WorldMap.getMap();
 		this.wallType = wallType;
 		this.floorType = floorType;
-		group = WorldMap.getMap().groupManager().getGroup(-1);
-		itemPile = new ArrayList<MovableObject>();
-		tileTasks = new ArrayList<Task>();
-		partOfPaths = new ArrayList<Path>();
-		creaturesInside = new ArrayList<Creature>();
+		group = map.groupManager().getGroup(-1);
+		itemPile = new ArrayList<MovableObject>(1);
+		tileTasks = new ArrayList<Task>(1);
+		partOfPaths = new ArrayList<Path>(1);
+		creaturesInside = new ArrayList<Creature>(1);
 		assignedZone = null;
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		renderX = x*WorldMap.tileSize;
+		renderY = y*WorldMap.tileSize;
 	}
 	
 	public boolean containsCreature() {
@@ -151,7 +157,7 @@ public class Tile implements Renderable{
 	}
 	
 	public void setGroup(int group) {
-		setGroup(WorldMap.getMap().groupManager().getGroup(group));
+		setGroup(map.groupManager().getGroup(group));
 	}
 
 	/*public void setWeight(int weight){
@@ -204,14 +210,11 @@ public class Tile implements Renderable{
 		if(toRender == null) {
 			return;
 		}
-		int x = this.x*WorldMap.tileSize;
-		int y = this.y*WorldMap.tileSize;
-		int renderZ = z - WorldMap.getMap().getZ();
-		if(z > 0) {
-			y += renderZ*16;
-		}
-		if(getWall() != TILE_TYPE.NONE || z != WorldMap.getMap().getZ()) {
-			Tile downTile = WorldMap.getMap().getTile(x/32, y/32+1, 0);
+		int x = renderX;
+		int renderZ = z - map.getZ();
+		int y = renderY + (renderZ>0?(renderZ*16):0);
+		if(getWall() != TILE_TYPE.NONE) {
+			Tile downTile = map.getTile(this.x, this.y+1, 0);
 			if(downTile == null || downTile.getWall() == TILE_TYPE.NONE) {
 				g.setColor(Color.darkGray);
 				g.fillRect(x, y+WorldMap.tileSize/2, WorldMap.tileSize, WorldMap.tileSize/2);
@@ -221,7 +224,7 @@ public class Tile implements Renderable{
 		if(getFirstTypeTask(Task.TILE_MINE)!=null) {
 			g.drawImage(toRender, x, y, Color.yellow);
 		}else{
-			if(wallType != TILE_TYPE.NONE || z != WorldMap.getMap().getZ()) {
+			if(wallType != TILE_TYPE.NONE || z != map.getZ()) {
 				g.drawImage(toRender, x, y, Color.darkGray);
 			}else{
 				g.drawImage(toRender, x, y);
