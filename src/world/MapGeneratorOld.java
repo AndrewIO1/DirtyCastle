@@ -73,8 +73,7 @@ public class MapGeneratorOld {
 		//ставятся точки гор и высокой температуры
 		placeRivers();
 		//Реки
-		Tile[][][] tiles = new Tile[256][256][1];
-		WorldMap mapSingleton = WorldMap.createMap(tiles);
+		WorldMap mapSingleton = WorldMap.createMap();
 
 		EntityFactory.init();
 
@@ -82,14 +81,14 @@ public class MapGeneratorOld {
 		x -= 512 - centerX;
 		y -= 512 - centerY;
 		//Вычисляется точка центра карты
-		for(int i = 0; i < tiles.length; i++){
-			for(int j = 0; j < tiles[0].length; j++){
+		for(short i = 0; i < mapSingleton.getWidth(); i++){
+			for(short j = 0; j < mapSingleton.getHeight(); j++){
 				double nx = (i/256d - 0.5 + x/1024d*(scale/0.5))/scale;
 				double ny = (j/256d - 0.5 + y/1024d*(scale/0.5))/scale;
 				double e = getElevation(nx,ny);
 				@SuppressWarnings("unused")
 				double m = getMoisture(nx, ny);
-				mapSingleton.placeTile(i, j, 0, getWall(e), getFloor(e)/*, m*/);
+				mapSingleton.placeTile(i, j, (short) 0, getWall(e), getFloor(e)/*, m*/);
 			}
 		}
 		//генерация карты

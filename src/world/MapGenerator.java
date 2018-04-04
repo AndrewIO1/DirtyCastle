@@ -14,7 +14,7 @@ public class MapGenerator {
 	public static void generate(int centerX, int centerY){
 		
 		progress = 0;
-		maxProgress = 256*256*48;
+		maxProgress = 256*256*32;
 
 		Thread generatorThread = new Thread() {
 			public void run() {
@@ -23,14 +23,14 @@ public class MapGenerator {
 				DiagramMap diagram = new DiagramMap(simplex);
 				diagram.generate(64, 64, 0.25);
 
-				Tile[][][] tiles = new Tile[256][256][48];
-				WorldMap mapSingleton = WorldMap.createMap(tiles);
+				final WorldMap mapSingleton = WorldMap.createMap();
 
 				EntityFactory.init();
 
-				for(int i = 0; i < tiles.length; i++){
-					for(int j = 0; j < tiles[0].length; j++){
-						for(int k = 0; k < tiles[0][0].length; k++){
+				for(short i = 0; i < mapSingleton.getWidth(); i++){
+					for(short j = 0; j < mapSingleton.getHeight(); j++){
+						for(short k = 0; k < mapSingleton.getDepth(); k++){
+							//TODO где-то юзается очень много памяти
 							int b = diagram.getTile(i, j, k);
 							mapSingleton.placeTile(i, j, k, getWall(b), getFloor(b));
 							progress++;
@@ -45,6 +45,8 @@ public class MapGenerator {
 			}
 		};
 		
+		generatorThread.setName("MapGen");
+		generatorThread.setDaemon(true);
 		generatorThread.start();
 		
 	}

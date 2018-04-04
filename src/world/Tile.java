@@ -21,9 +21,9 @@ import world.zones.Zone;
 
 public class Tile implements Renderable{
 
-	private int x;
-	private int y;
-	private int z;
+	private short x;
+	private short y;
+	private short z;
 
 	public static enum TILE_TYPE{
 		NONE(-1, "Nothing"),
@@ -57,13 +57,12 @@ public class Tile implements Renderable{
 	private List<Path> partOfPaths;
 	private List<Creature> creaturesInside;
 	private Zone assignedZone;
-	private WorldMap map;
-	private int renderX;
-	private int renderY;
+	private short renderX;
+	private short renderY;
 
-	public Tile(TILE_TYPE wallType, TILE_TYPE floorType, int x, int y, int z){
+	public Tile(TILE_TYPE wallType, TILE_TYPE floorType, short x, short y, short z){
 		//weight = 1;
-		map = WorldMap.getMap();
+		WorldMap map = WorldMap.getMap();
 		this.wallType = wallType;
 		this.floorType = floorType;
 		group = map.groupManager().getGroup(-1);
@@ -75,8 +74,8 @@ public class Tile implements Renderable{
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		renderX = x*WorldMap.tileSize;
-		renderY = y*WorldMap.tileSize;
+		renderX = (short) (x*WorldMap.tileSize);
+		renderY = (short) (y*WorldMap.tileSize);
 	}
 	
 	public boolean containsCreature() {
@@ -157,7 +156,7 @@ public class Tile implements Renderable{
 	}
 	
 	public void setGroup(int group) {
-		setGroup(map.groupManager().getGroup(group));
+		setGroup(WorldMap.getMap().groupManager().getGroup(group));
 	}
 
 	/*public void setWeight(int weight){
@@ -210,6 +209,7 @@ public class Tile implements Renderable{
 		if(toRender == null) {
 			return;
 		}
+		WorldMap map = WorldMap.getMap();
 		int x = renderX;
 		int renderZ = z - map.getZ();
 		int y = renderY + (renderZ>0?(renderZ*16):0);
