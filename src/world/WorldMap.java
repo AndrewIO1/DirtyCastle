@@ -46,6 +46,8 @@ public class WorldMap {
 	private int cameraX = 0;
 	private int cameraY = 0;
 	private int z = 15;
+	
+	private PriorityQueue<Renderable> renderQueue;
 
 
 	private int[] deltas;
@@ -64,6 +66,7 @@ public class WorldMap {
 		deltas = new int[50];
 		GroupManager.createInstance(this);
 		ZoneManager.createInstance(this);
+		renderQueue = new PriorityQueue<Renderable>();
 	}
 
 	public GroupManager groupManager() {
@@ -111,15 +114,15 @@ public class WorldMap {
 	}
 
 	public int getWidth(){
-		return tiles.length;
+		return tiles[0].length;
 	}
 
 	public int getHeight(){
-		return tiles[0].length;
+		return tiles[0][0].length;
 	}
 	
 	public int getDepth() {
-		return tiles[0][0].length;
+		return tiles.length;
 	}
 
 	public int getCameraX() {
@@ -139,32 +142,32 @@ public class WorldMap {
 	}
 
 	public Zone getZone(int x, int y, int z) {
-		return tiles[x][y][z].getZone();
+		return tiles[z][x][y].getZone();
 	}
 
 	public int getGroup(int x, int y, int z){
 		//Возвращает группу из тайла по координатам
 		if(x < 0 || y < 0 || z < 0 || 
-				x >= tiles.length || y >= tiles[0].length || z >= tiles[0][0].length){
+				x >= getWidth() || y >= getHeight() || z >= getDepth()){
 			return -3;
 		}
 
-		return tiles[x][y][z].getGroup();
+		return tiles[z][x][y].getGroup();
 	}
 
 	public TileGroup getGroupObject(int x, int y, int z){
 		//Возвращает группу из тайла по координатам
 		if(x < 0 || y < 0 || z < 0 || 
-				x >= tiles.length || y >= tiles[0].length || z >= tiles[0][0].length){
+				x >= getWidth() || y >= getHeight() || z >= getDepth()){
 			return null;
 		}
 
-		return tiles[x][y][z].getGroupObject();
+		return tiles[z][x][y].getGroupObject();
 	}
 
-	public void placeTile(int x, int y, int z, TILE_TYPE wall, TILE_TYPE floor){
+	public void placeTile(short x, short y, short z, TILE_TYPE wall, TILE_TYPE floor){
 		//Ставит тайл в координаты, меняет вес тайла, если он непроходим
-		tiles[x][y][z] = new Tile(wall, floor, x, y, z);
+		tiles[z][x][y] = new Tile(wall, floor, x, y, z);
 		/*if(!tilePassable(x,y,z)) {
 			tiles[x][y][z].setWeight(999);
 		}else {
@@ -193,38 +196,38 @@ public class WorldMap {
 
 	public Task getFirstTypeTask(int x, int y, int z, int taskType){
 		if(x < 0 || y < 0 || z < 0 || 
-				x >= tiles.length || y >= tiles[0].length || z >= tiles[0][0].length){
+				x >= getWidth() || y >= getHeight() || z >= getDepth()){
 			return null;
 		}
 
-		return tiles[x][y][z].getFirstTypeTask(taskType);
+		return tiles[z][x][y].getFirstTypeTask(taskType);
 	}
 
 	public Tile getTile(int x, int y, int z){
 		//Возвращает целый тайл по координатам
 		if(x < 0 || y < 0 || z < 0 || 
-				x >= tiles.length || y >= tiles[0].length || z >= tiles[0][0].length){
+				x >= getWidth() || y >= getHeight() || z >= getDepth()){
 			return null;
 		}
 
-		return tiles[x][y][z];
+		return tiles[z][x][y];
 	}
 
 	public TILE_TYPE getWall(int x, int y, int z){
 		//Возвращает тип стены
-		return tiles[x][y][z].getWall();
+		return tiles[z][x][y].getWall();
 	}
 
 	public TILE_TYPE getFloor(int x, int y, int z){
 		//Возвращает тип пола
-		return tiles[x][y][z].getFloor();
+		return tiles[z][x][y].getFloor();
 	}
 
 	public synchronized boolean tilePassable(int x, int y, int z){
 		//Смотрит, проходим ли тайл (стена пустая и пол не пустой)
 		return  x >=0 && y >= 0 && z >= 0 &&
-				x < tiles.length && y < tiles[0].length && z < tiles[0][0].length &&
-				tiles[x][y][z].tilePassable();
+				x < getWidth() && y < getHeight() && z < getDepth() &&
+				tiles[z][x][y].tilePassable();
 	}
 
 	public void addCreature(Creature c){
@@ -276,7 +279,7 @@ public class WorldMap {
 
 		if(GameState.getAction() == GameState.SPAWN_CITIZEN) {
 			if(gc.getInput().isMousePressed(Input.MOUSE_RIGHT_BUTTON)){
-				if(gc.getInput().getMouseX() < (tiles.length-1)*3 && gc.getInput().getMouseY() < (tiles[0].length-1)*3
+				if(gc.getInput().getMouseX() < (getWidth()-1)*3 && gc.getInput().getMouseY() < (getHeight()-1)*3
 						&& gc.getInput().getMouseY() > 0){
 
 					if(!tilePassable((gc.getInput().getMouseX()+cameraX)/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize,0)){
@@ -301,16 +304,16 @@ public class WorldMap {
 					//Выбор деревьев
 					int selectionStartX = Math.max(0,Math.min(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
 					int selectionStartY = Math.max(0,Math.min(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
-					int selectionEndX = Math.min(tiles.length-1,Math.max(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
-					int selectionEndY = Math.min(tiles[0].length-1,Math.max(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
+					int selectionEndX = Math.min(getWidth()-1,Math.max(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
+					int selectionEndY = Math.min(getHeight()-1,Math.max(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
 
 					for(int i = selectionStartX; i <= selectionEndX; i++) {
 						for(int j = selectionStartY; j <= selectionEndY; j++) {
-							if(tiles[i][j][0].getObject() != null && tiles[i][j][0].getObject().getType() == EntityType.TREE) {
-								if(tiles[i][j][0].getFirstTypeTask(Task.TREE_CUT) != null) {
+							if(tiles[0][i][j].getObject() != null && tiles[0][i][j].getObject().getType() == EntityType.TREE) {
+								if(tiles[0][i][j].getFirstTypeTask(Task.TREE_CUT) != null) {
 									continue;
 								}
-								TaskManager.getInstance().addTree(tiles[i][j][0]);
+								TaskManager.getInstance().addTree(tiles[0][i][j]);
 							}
 						}
 					}
@@ -332,16 +335,16 @@ public class WorldMap {
 					//Выбор стен
 					int selectionStartX = Math.max(0,Math.min(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
 					int selectionStartY = Math.max(0,Math.min(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
-					int selectionEndX = Math.min(tiles.length-1,Math.max(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
-					int selectionEndY = Math.min(tiles[0].length-1,Math.max(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
+					int selectionEndX = Math.min(getWidth()-1,Math.max(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
+					int selectionEndY = Math.min(getHeight()-1,Math.max(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
 
 					for(int i = selectionStartX; i <= selectionEndX; i++) {
 						for(int j = selectionStartY; j <= selectionEndY; j++) {
-							if(tiles[i][j][0].getWall() != TILE_TYPE.NONE) {
-								if(tiles[i][j][0].getFirstTypeTask(Task.TILE_MINE) != null) {
+							if(tiles[0][i][j].getWall() != TILE_TYPE.NONE) {
+								if(tiles[0][i][j].getFirstTypeTask(Task.TILE_MINE) != null) {
 									continue;
 								}
-								TaskManager.getInstance().addTile(tiles[i][j][0]);
+								TaskManager.getInstance().addTile(tiles[0][i][j]);
 							}
 						}
 					}
@@ -363,13 +366,13 @@ public class WorldMap {
 					//Выбор зоны хранилища
 					int selectionStartX = Math.max(0,Math.min(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
 					int selectionStartY = Math.max(0,Math.min(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
-					int selectionEndX = Math.min(tiles.length-1,Math.max(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
-					int selectionEndY = Math.min(tiles[0].length-1,Math.max(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
+					int selectionEndX = Math.min(getWidth()-1,Math.max(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
+					int selectionEndY = Math.min(getHeight()-1,Math.max(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
 
 					boolean success = true;
 					outer: for(int i = selectionStartX; i <= selectionEndX; i++) {
 						for(int j = selectionStartY; j <= selectionEndY; j++) {
-							if(!tilePassable(i,j,0) || tiles[i][j][0].getZone() != null) {
+							if(!tilePassable(i,j,0) || tiles[0][i][j].getZone() != null) {
 								success = false;
 								break outer;
 							}
@@ -399,15 +402,15 @@ public class WorldMap {
 					//Выбор зоны постройки
 					int selectionStartX = Math.max(0,Math.min(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
 					int selectionStartY = Math.max(0,Math.min(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
-					int selectionEndX = Math.min(tiles.length-1,Math.max(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
-					int selectionEndY = Math.min(tiles[0].length-1,Math.max(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
+					int selectionEndX = Math.min(getWidth()-1,Math.max(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
+					int selectionEndY = Math.min(getHeight()-1,Math.max(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
 
 					for(int i = selectionStartX; i <= selectionEndX; i++) {
 						for(int j = selectionStartY; j <= selectionEndY; j++) {
-							if(!tilePassable(i,j,0) || tiles[i][j][0].getZone() != null || tiles[i][j][0].getFirstTypeTask(Task.WALL_BUILD) != null) {
+							if(!tilePassable(i,j,0) || tiles[0][i][j].getZone() != null || tiles[0][i][j].getFirstTypeTask(Task.WALL_BUILD) != null) {
 								continue;
 							}
-							TaskManager.getInstance().addWallBuildingSpot(tiles[i][j][0], BuildingTemplate.LOG_WALL);
+							TaskManager.getInstance().addWallBuildingSpot(tiles[0][i][j], BuildingTemplate.LOG_WALL);
 						}
 					}
 
@@ -528,14 +531,14 @@ public class WorldMap {
 
 
 
-		PriorityQueue<Renderable> renderQueue = new PriorityQueue<Renderable>();
+		renderQueue.clear();
 		
 		Tile renderTile;
 		
 		for(int i = renderXStart; i < renderXEnd; i++) {
 			for(int j = renderYStart; j < renderYEnd; j++) {
 				for(int k = z; k < getDepth(); k++) {
-					renderTile = tiles[i][j][k];
+					renderTile = tiles[k][i][j];
 					if(renderTile.getRenderType() >= 0) {
 						renderQueue.add(renderTile, renderTile.getPriority());
 						break;
@@ -592,13 +595,13 @@ public class WorldMap {
 		if(selecting) {
 			int selectionStartX = Math.max(0,Math.min(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
 			int selectionStartY = Math.max(0,Math.min(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
-			int selectionEndX = Math.min(tiles.length-1,Math.max(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
-			int selectionEndY = Math.min(tiles[0].length-1,Math.max(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
+			int selectionEndX = Math.min(getWidth()-1,Math.max(selectionX/tileSize, (gc.getInput().getMouseX()+cameraX)/tileSize));
+			int selectionEndY = Math.min(getHeight()-1,Math.max(selectionY/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize));
 
 			for(int i = selectionStartX; i <= selectionEndX; i++) {
 				for(int j = selectionStartY; j <= selectionEndY; j++) {
 					int wallCorrection = 0;
-					if(tiles[i][j][0].getWall() != TILE_TYPE.NONE) {
+					if(tiles[0][i][j].getWall() != TILE_TYPE.NONE) {
 						wallCorrection = -16;
 					}
 					g.fillRect(i*tileSize-cameraX, j*tileSize-cameraY + wallCorrection, tileSize, tileSize);
@@ -609,16 +612,17 @@ public class WorldMap {
 			int i = (gc.getInput().getMouseX()+cameraX)/tileSize;
 			int j = (gc.getInput().getMouseY()+cameraY)/tileSize;
 			int wallCorrection = 0;
-			if(j < 256 && i < 256 && tiles[i][j][0].getWall() != TILE_TYPE.NONE) {
+			if(j < 256 && i < 256 && tiles[0][i][j].getWall() != TILE_TYPE.NONE) {
 				wallCorrection = -16;
 			}
 			g.fillRect(i*tileSize-cameraX, j*tileSize-cameraY + wallCorrection, tileSize, tileSize);
 			
 			/*g.setColor(Color.white);
-			g.drawString(tiles[i][j][0].toString(), 900, 300);*/
+			g.drawString(tiles[0][i][j].toString(), 900, 300);*/
 		}
 
 		g.setColor(Color.white);
+		
 		g.drawString(GameState.getActionName(), 1000, 370);
 
 		g.drawString("PathFinders working: " + PathFinderManager.getInstance().getCalculatingPathFinders() + 
@@ -648,8 +652,9 @@ public class WorldMap {
 	private static volatile WorldMap mapSingleton;
 	public static final int tileSize = 32;
 	
-	public static synchronized WorldMap createMap(Tile[][][] tileMap) {
-		mapSingleton = new WorldMap(tileMap);
+	public static synchronized WorldMap createMap() {
+		//TODO ПЕРЕДЕЛАТЬ, ПОСТАВИТЬ 32 В ПЕРВЫЕ СКОБКИ, А 256 В ПОСЛЕДНИЕ
+		mapSingleton = new WorldMap(new Tile[32][256][256]);
 		return mapSingleton;
 	}
 

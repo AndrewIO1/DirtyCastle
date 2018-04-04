@@ -19,7 +19,7 @@ public class DiagramMap {
 	private int points = 450;
 	private int width = 256;
 	private int height = 256;
-	private int[][][] tileMap = new int[256][256][48];
+	private short[][][] tileMap = new short[32][256][256];
 	private double[][] eMap = new double[256][256];
 	private int[][] bMap = new int[256][256];
 	private boolean[][] river = new boolean[256][256];
@@ -181,8 +181,8 @@ public class DiagramMap {
 	}
 	
 	private void computeTiles() {
-		for(int i = 0; i < tileMap.length; i++) {
-			for(int j = 0; j < tileMap[0].length; j++) {
+		for(int i = 0; i < tileMap[0].length; i++) {
+			for(int j = 0; j < tileMap[0][0].length; j++) {
 				double x = sX + i*scale;
 				double y = sY + j*scale;
 				
@@ -221,11 +221,11 @@ public class DiagramMap {
 			}
 		}
 		
-		for(int i = 0; i < tileMap.length; i++) {
-			for(int j = 0; j < tileMap[0].length; j++) {
+		for(int i = 0; i < tileMap[0].length; i++) {
+			for(int j = 0; j < tileMap[0][0].length; j++) {
 				
 				boolean first = true;
-				for(int k = 0; k < tileMap[0][0].length; k++) {
+				for(int k = 0; k < tileMap.length; k++) {
 					
 					
 					double z = (k-16);
@@ -247,25 +247,25 @@ public class DiagramMap {
 					
 					if(e <= 0.3-z*0.05) {
 						if(z < 0) {
-							tileMap[i][j][k] = 5;
+							tileMap[k][i][j] = 5;
 						}else {
-							tileMap[i][j][k] = 3;
+							tileMap[k][i][j] = 3;
 						}
 					}else if(e <= 0.8-z*0.05){
 						if(first) {
-							tileMap[i][j][k] = 1;
+							tileMap[k][i][j] = 1;
 						}else {
-							tileMap[i][j][k] = 4;
+							tileMap[k][i][j] = 4;
 						}
 					}else {
-						tileMap[i][j][k] = 2;
+						tileMap[k][i][j] = 2;
 					}
 					
-					if(first && river[i][j] && tileMap[i][j][k] != 5) {
-						tileMap[i][j][k] = 3;
+					if(first && river[i][j] && tileMap[k][i][j] != 5) {
+						tileMap[k][i][j] = 3;
 					}
 					
-					if(tileMap[i][j][k] != 5) first = false;
+					if(tileMap[k][i][j] != 5) first = false;
 				}
 			}
 		}
@@ -308,19 +308,19 @@ public class DiagramMap {
 	}
 	
 	public int getTile(int x, int y, int z) {
-		return tileMap[x][y][z];
+		return tileMap[z][x][y];
 	}
 	
 	public int width() {
-		return tileMap.length;
-	}
-	
-	public int height() {
 		return tileMap[0].length;
 	}
 	
-	public int depth() {
+	public int height() {
 		return tileMap[0][0].length;
+	}
+	
+	public int depth() {
+		return tileMap.length;
 	}
 	
 	public double getElevation(double x, double y) {
