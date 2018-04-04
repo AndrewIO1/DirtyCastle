@@ -25,6 +25,7 @@ public abstract class Creature extends MovableObject{
 	protected int dex; //ловкость
 	protected int sex; //пол
 	protected int bodyType;
+	protected int mood;
 
 	protected Tile tilePos;
 
@@ -37,6 +38,8 @@ public abstract class Creature extends MovableObject{
 		intel = builder.intel;
 		dex = builder.dex;
 		sex = builder.sex;
+		bodyType = builder.bodyType;
+		mood = builder.mood;
 		
 		changeTile(getTile());
 	}
@@ -118,6 +121,7 @@ public abstract class Creature extends MovableObject{
 		protected int dex = 0; //ловкость
 		protected int sex = 0; //yes
 		protected int bodyType = 0;
+		protected int mood = 0;
 		
 		public Builder(String name) { super(name); }
 		public Builder speed(float speed) { this.speed = speed; return this; }
@@ -126,6 +130,7 @@ public abstract class Creature extends MovableObject{
 		public Builder dex(int dex) { this.dex = dex; return this; }
 		public Builder sex(int sex) { this.sex = sex; return this; }
 		public Builder bodyType(int bodyType) { this.bodyType = bodyType; return this; }
+		public Builder mood(int mood) {this.mood = mood; return this;};
 		
 		public Builder() { super(""); }
 		public float speed() { return speed; }
@@ -134,6 +139,7 @@ public abstract class Creature extends MovableObject{
 		public int dex() { return dex; }
 		public int sex() { return sex; }
 		public int bodyType() { return bodyType; }
+		public int mood() { return mood;}
 	}
 
 }

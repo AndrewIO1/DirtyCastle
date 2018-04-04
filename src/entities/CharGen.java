@@ -1,5 +1,6 @@
 package entities;
 
+import core.DwarfsGame;
 import entities.creatures.TestCreature;
 
 public class CharGen {
@@ -7,35 +8,50 @@ public class CharGen {
 	 * @param args
 	 * @return 
 	 */
-//	..методы
+//	генератор СЭКСА
 	private static void sexGen(TestCreature.Builder citizen) {
 		//генерация пола
 		int sex =  1 + (int)(Math.random() * 2);
 		citizen.sex(sex);
 	}
+	
+//	генератор имени
+// заполняем массивы слогами
+	private static String[] male1s = {"Vladi","Kosti","Brone","Kila", "Andre", "Meta", "Stan"};
+	private static String[] male2s = {"slav","mir","var","tard"};
+	private static String[] fmale1s = {"Stel", "Skal", "Flo", "Ka", "Si"};
+	private static String[] fmale2s = {"mi", "la", "li", "den"};
+	private static String[] fmale3s = {"cia", "na", "nia"};
 
 	private static void nameGen(TestCreature.Builder citizen) {
-		String[] MaleNames = {"Denis", "Andrew", "Nikolyasik"};
-		String[] FmaleNames = {"Sveta", "Sasha", "Marry"};
+		String name;
 		if (citizen.sex() == 1) {
-			int n = (int)(Math.random()*MaleNames.length);
-			citizen.name(MaleNames[n]) ;
+			String rand1 = male1s[DwarfsGame.rnd.nextInt(male1s.length)];
+			String rand2 = male2s[DwarfsGame.rnd.nextInt(male2s.length)];
+			name = rand1 + rand2;
 		}
 		else {
-			int n = (int)(Math.random()*FmaleNames.length);
-			citizen.name(FmaleNames[n]);
-		}
+			String rand1 = fmale1s[DwarfsGame.rnd.nextInt(fmale1s.length)];
+			String rand2 = fmale2s[DwarfsGame.rnd.nextInt(fmale2s.length)];
+			String rand3 = fmale3s[DwarfsGame.rnd.nextInt(fmale3s.length)];
+			name = rand1 + rand2 + rand3;
+			}
+		citizen.name(name) ;	
 		
 	}
 	
+// генератор основных статов
 	private static void mainStatGen(TestCreature.Builder citizen) {
 		citizen.maxHp(100);
 		citizen.speed(0.1f);
 		citizen.str(10); //сила
 		citizen.intel(10); //ум
 		citizen.dex(10); //ловкость
+		citizen.mood(50); //настроение
 	}
 	
+	
+//	генератор типа тела
 	private static void bodyGen(TestCreature.Builder citizen) {
 		int[] bodyStats = new int[3]; //статы тела
 		//определение телосложения по Шелдону
@@ -78,8 +94,7 @@ public class CharGen {
 	
 
 
-	//НОВЫЙ ГЕНЕРАТОР ВЫШЕ, ПОКА ТЕСТ
-	//genirator 0.2
+	//genirator 0.3.1
 	public static TestCreature.Builder charGen(TestCreature.Builder citizen){
 		sexGen(citizen);
 		nameGen(citizen);
