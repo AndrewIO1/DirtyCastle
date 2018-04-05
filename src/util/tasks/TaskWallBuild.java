@@ -42,6 +42,7 @@ public class TaskWallBuild extends TaskConsumeItems {
 
 			int x = targetTile.getX();
 			int y = targetTile.getY();
+			int z = targetTile.getZ();
 
 			WorldMap map = WorldMap.getMap();
 			
@@ -73,7 +74,7 @@ public class TaskWallBuild extends TaskConsumeItems {
 			x = tilesToWalk[c].getX();
 			y = tilesToWalk[c].getY();
 
-			worker.findPath(x, y, 1, 1);
+			worker.findPath(x, y, z, 1, 1);
 			taskTimer = 0;
 			taskTime = defaultTaskTime;
 			step++;
@@ -91,8 +92,7 @@ public class TaskWallBuild extends TaskConsumeItems {
 				if(progress >= progressMax) {
 					targetTile.setWall(wallType);
 					targetTile.consumeItems();
-					//TODO исправить на нормальное
-					WorldMap.getMap().getMiniMap().updateMiniMap(targetTile.getX(), targetTile.getY(), 16, 1, 1, 1);
+					WorldMap.getMap().getMiniMap().updateMiniMap(targetTile.getX(), targetTile.getY(), targetTile.getZ(), 1, 1, 1);
 					obstacleConstructed(worker);
 
 					completed = true;

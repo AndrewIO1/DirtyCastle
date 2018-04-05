@@ -3,36 +3,36 @@ package ai;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.Vertex;
+import util.Vertex3i;
 import world.Tile;
 import world.WorldMap;
 
 public class Path {
-	private List<Vertex> points;
+	private List<Vertex3i> points;
 	private static WorldMap map;
 	
 	public Path(){
 		if(map == null) {
 			map = WorldMap.getMap();
 		}
-		points = new ArrayList<Vertex>(0);
+		points = new ArrayList<Vertex3i>(0);
 	}
 	
-	public Vertex nextPoint(){
+	public Vertex3i nextPoint(){
 		if(points == null || points.size() == 0) return null;
-		Vertex next = points.get(0);
+		Vertex3i next = points.get(0);
 		Tile vertexTile = map.getTile(next.getTileX(), next.getTileY(), 0);
 		vertexTile.removePath(this);
 		points.remove(0);
 		return next;
 	}
 	
-	public Vertex peek(){
+	public Vertex3i peek(){
 		if(points == null || points.size() == 0) return null;
 		return points.get(0);
 	}
 	
-	public void addPoint(Vertex point){
+	public void addPoint(Vertex3i point){
 		map.getTile(point.getTileX(), point.getTileY(), 0).addPath(this);
 		points.add(point);
 	}
@@ -57,7 +57,7 @@ public class Path {
 		}
 	}
 	
-	private boolean checkObstacles(WorldMap map, Vertex p1, Vertex p2){
+	private boolean checkObstacles(WorldMap map, Vertex3i p1, Vertex3i p2){
 		if(Math.abs(p1.getX()/32 - p2.getX()/32) >= Math.abs(p1.getY()/32 - p2.getY()/32)){
 			int x = p1.getX()/32;
 			int y = p1.getY()/32;
@@ -82,7 +82,7 @@ public class Path {
 		return false;
 	}
 	
-	public List<Vertex> getPoints() {
+	public List<Vertex3i> getPoints() {
 		return points;
 	}
 }

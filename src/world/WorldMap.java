@@ -20,7 +20,7 @@ import entities.creatures.TestCreature;
 import graphics.Renderable;
 import util.EntityFactory;
 import util.PriorityQueue;
-import util.Vertex;
+import util.Vertex3i;
 import util.alerts.AlertManager;
 import util.path_finding.PathFinderManager;
 import util.tasks.BuildingTemplate;
@@ -267,10 +267,11 @@ public class WorldMap {
 			if(needUpdate.get(i).isDead()) {
 				int x = (int) (needUpdate.get(i).getX()/32);
 				int y = (int) (needUpdate.get(i).getY()/32);
+				int z = needUpdate.get(i).getZ();
 				allObjects.remove(needUpdate.get(i));
 				needUpdate.remove(i);
 				//TODO исправить на нормальное
-				miniMap.updateMiniMap(x,y,16,1,1,1);
+				miniMap.updateMiniMap(x,y,z,1,1,1);
 				i--;
 				continue;
 			}
@@ -282,11 +283,11 @@ public class WorldMap {
 				if(gc.getInput().getMouseX() < (getWidth()-1)*3 && gc.getInput().getMouseY() < (getHeight()-1)*3
 						&& gc.getInput().getMouseY() > 0){
 
-					if(!tilePassable((gc.getInput().getMouseX()+cameraX)/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize,0)){
+					if(!tilePassable((gc.getInput().getMouseX()+cameraX)/tileSize, (gc.getInput().getMouseY()+cameraY)/tileSize,z)){
 						return;
 					}
 					TestCreature test = EntityFactory.generateTestCreature(gc.getInput().getMouseX()+cameraX, 
-							gc.getInput().getMouseY()+cameraY, 0);
+							gc.getInput().getMouseY()+cameraY, z);
 					TestAI testai= new TestAI();
 					test.setAI(testai);
 					addCreature(test);
@@ -309,11 +310,11 @@ public class WorldMap {
 
 					for(int i = selectionStartX; i <= selectionEndX; i++) {
 						for(int j = selectionStartY; j <= selectionEndY; j++) {
-							if(tiles[0][i][j].getObject() != null && tiles[0][i][j].getObject().getType() == EntityType.TREE) {
-								if(tiles[0][i][j].getFirstTypeTask(Task.TREE_CUT) != null) {
+							if(tiles[z][i][j].getObject() != null && tiles[z][i][j].getObject().getType() == EntityType.TREE) {
+								if(tiles[z][i][j].getFirstTypeTask(Task.TREE_CUT) != null) {
 									continue;
 								}
-								TaskManager.getInstance().addTree(tiles[0][i][j]);
+								TaskManager.getInstance().addTree(tiles[z][i][j]);
 							}
 						}
 					}
@@ -340,11 +341,11 @@ public class WorldMap {
 
 					for(int i = selectionStartX; i <= selectionEndX; i++) {
 						for(int j = selectionStartY; j <= selectionEndY; j++) {
-							if(tiles[0][i][j].getWall() != TILE_TYPE.NONE) {
-								if(tiles[0][i][j].getFirstTypeTask(Task.TILE_MINE) != null) {
+							if(tiles[z][i][j].getWall() != TILE_TYPE.NONE) {
+								if(tiles[z][i][j].getFirstTypeTask(Task.TILE_MINE) != null) {
 									continue;
 								}
-								TaskManager.getInstance().addTile(tiles[0][i][j]);
+								TaskManager.getInstance().addTile(tiles[z][i][j]);
 							}
 						}
 					}
@@ -372,7 +373,7 @@ public class WorldMap {
 					boolean success = true;
 					outer: for(int i = selectionStartX; i <= selectionEndX; i++) {
 						for(int j = selectionStartY; j <= selectionEndY; j++) {
-							if(!tilePassable(i,j,0) || tiles[0][i][j].getZone() != null) {
+							if(!tilePassable(i,j,z) || tiles[z][i][j].getZone() != null) {
 								success = false;
 								break outer;
 							}
@@ -407,10 +408,10 @@ public class WorldMap {
 
 					for(int i = selectionStartX; i <= selectionEndX; i++) {
 						for(int j = selectionStartY; j <= selectionEndY; j++) {
-							if(!tilePassable(i,j,0) || tiles[0][i][j].getZone() != null || tiles[0][i][j].getFirstTypeTask(Task.WALL_BUILD) != null) {
+							if(!tilePassable(i,j,z) || tiles[z][i][j].getZone() != null || tiles[z][i][j].getFirstTypeTask(Task.WALL_BUILD) != null) {
 								continue;
 							}
-							TaskManager.getInstance().addWallBuildingSpot(tiles[0][i][j], BuildingTemplate.LOG_WALL);
+							TaskManager.getInstance().addWallBuildingSpot(tiles[z][i][j], BuildingTemplate.LOG_WALL);
 						}
 					}
 
@@ -576,7 +577,7 @@ public class WorldMap {
 
 			if(creatures.get(i).getAI().getPath() != null) {
 				g.setColor(Color.cyan);
-				List<Vertex> path = creatures.get(i).getAI().getPath().getPoints();
+				List<Vertex3i> path = creatures.get(i).getAI().getPath().getPoints();
 				for(int j = 0; j < path.size()-1; j++) {
 					g.drawLine(path.get(j).getX(), path.get(j).getY(), path.get(j+1).getX(), path.get(j+1).getY());
 					g.drawRect(path.get(j+1).getX()-4, path.get(j+1).getY()-4, 9, 9);
@@ -601,7 +602,7 @@ public class WorldMap {
 			for(int i = selectionStartX; i <= selectionEndX; i++) {
 				for(int j = selectionStartY; j <= selectionEndY; j++) {
 					int wallCorrection = 0;
-					if(tiles[0][i][j].getWall() != TILE_TYPE.NONE) {
+					if(tiles[z][i][j].getWall() != TILE_TYPE.NONE) {
 						wallCorrection = -16;
 					}
 					g.fillRect(i*tileSize-cameraX, j*tileSize-cameraY + wallCorrection, tileSize, tileSize);
@@ -612,7 +613,7 @@ public class WorldMap {
 			int i = (gc.getInput().getMouseX()+cameraX)/tileSize;
 			int j = (gc.getInput().getMouseY()+cameraY)/tileSize;
 			int wallCorrection = 0;
-			if(j < 256 && i < 256 && tiles[0][i][j].getWall() != TILE_TYPE.NONE) {
+			if(j < 256 && i < 256 && tiles[z][i][j].getWall() != TILE_TYPE.NONE) {
 				wallCorrection = -16;
 			}
 			g.fillRect(i*tileSize-cameraX, j*tileSize-cameraY + wallCorrection, tileSize, tileSize);

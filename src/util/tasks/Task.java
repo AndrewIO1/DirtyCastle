@@ -5,7 +5,7 @@ import java.util.List;
 
 import ai.AI;
 import entities.GameObject;
-import util.Vertex;
+import util.Vertex3i;
 import world.Tile;
 import world.WorldMap;
 import world.tile_groups.TileGroup;
@@ -20,7 +20,7 @@ public abstract class Task {
 
 	protected int step = 0;
 	protected List<GameObject> targets;
-	protected List<Vertex> vertexes;
+	protected List<Vertex3i> vertexes;
 	protected int type = -1;
 	protected Tile targetTile;
 	protected int taskTimer;
@@ -32,27 +32,27 @@ public abstract class Task {
 
 	protected final int defaultTaskTime = 1000;
 
-	public Task(ArrayList<GameObject> targets, ArrayList<Vertex> targets2, int type) {
+	public Task(ArrayList<GameObject> targets, ArrayList<Vertex3i> targets2, int type) {
 		init(targets, targets2, type);
 
 	}
 
 	public Task(ArrayList<GameObject> targets, int type) {
-		this(targets, new ArrayList<Vertex>(0), type);
+		this(targets, new ArrayList<Vertex3i>(0), type);
 	}
 
 	public Task(GameObject target, int type) {
 		List<GameObject> newTargets = new ArrayList<GameObject>();
 		newTargets.add(target);
-		init(newTargets, new ArrayList<Vertex>(0), type);
+		init(newTargets, new ArrayList<Vertex3i>(0), type);
 	}
 
 	public Task(Tile target, int type) {
-		init(new ArrayList<GameObject>(0), new ArrayList<Vertex>(0), type);
+		init(new ArrayList<GameObject>(0), new ArrayList<Vertex3i>(0), type);
 		setTargetTile(target);
 	}
 
-	protected void init(List<GameObject> targets, ArrayList<Vertex> targets2, int type) {
+	protected void init(List<GameObject> targets, ArrayList<Vertex3i> targets2, int type) {
 		this.targets = targets;
 		this.type = type;
 		if(targets.size() > 0) {

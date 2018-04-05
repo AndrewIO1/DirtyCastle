@@ -4,6 +4,7 @@ import java.util.Random;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.opengl.renderer.Renderer;
 import org.newdawn.slick.state.StateBasedGame;
 
 import graphics.TextureStorage;
@@ -39,6 +40,8 @@ public class DwarfsGame extends StateBasedGame{
 	public static void main(String[] args) {
 		AppGameContainer appgc;
 		try{
+			//ѕопробовал рендерер помен€ть, вроде производительность улучшилась
+			Renderer.setRenderer(Renderer.VERTEX_ARRAY_RENDERER);
 			xSize = 1300;//Display.getDesktopDisplayMode().getWidth();
 			ySize = 900;//Display.getDesktopDisplayMode().getHeight();
 			appgc = new AppGameContainer(new DwarfsGame(gamename));

@@ -6,7 +6,7 @@ import java.util.List;
 import ai.AI;
 import ai.Path;
 import util.PriorityQueue;
-import util.Vertex;
+import util.Vertex3i;
 import util.tasks.Task;
 import world.WorldMap;
 
@@ -15,14 +15,15 @@ public class PathFinder extends Thread {
 	
 	private int x;
 	private int y;
+	private int z;
 	
 	@SuppressWarnings("unused")
 	private int BaseCost;
 	
 	private int NoneCost;
-	private Vertex from;
-	private PriorityQueue<Vertex> now;
-	private List<Vertex> come_from;
+	private Vertex3i from;
+	private PriorityQueue<Vertex3i> now;
+	private List<Vertex3i> come_from;
 	private float[][] costs;
 	private boolean alive;
 	private volatile boolean calculating;
@@ -33,9 +34,10 @@ public class PathFinder extends Thread {
 		alive = true;
 	}
 	
-	public void requestPath(int x, int y, int BaseCost, int NoneCost, Vertex from, AI requester) {
+	public void requestPath(int x, int y, int z, int BaseCost, int NoneCost, Vertex3i from, AI requester) {
 		this.x = x;
 		this.y = y;
+		this.z = z;
 		this.BaseCost = BaseCost;
 		this.NoneCost = NoneCost;
 		this.from = from;
@@ -47,7 +49,7 @@ public class PathFinder extends Thread {
 	}
 	
 	public void requestPath(PathFinderRequest request) {
-		this.requestPath(request.getX(), request.getY(), request.getBaseCost(), 
+		this.requestPath(request.getX(), request.getY(), request.getZ(), request.getBaseCost(), 
 				request.getNoneCost(), request.getFrom(), request.getRequester());
 	}
 	
@@ -55,11 +57,11 @@ public class PathFinder extends Thread {
 		return calculating;
 	}
 
-	private Vertex getLastVertex() {
+	private Vertex3i getLastVertex() {
 		return come_from.get(0);
 	}
 
-	protected final boolean unusedVertex(Vertex v){
+	protected final boolean unusedVertex(Vertex3i v){
 		for(int i = 0; i < come_from.size(); i++){
 			if(come_from.get(i).equals(v)){
 				return false;
@@ -98,15 +100,15 @@ public class PathFinder extends Thread {
 			if(now == null || now.size() == 0){
 
 				if(now == null) {
-					now = new PriorityQueue<Vertex>();
+					now = new PriorityQueue<Vertex3i>();
 				}
 				if(come_from == null) {
-					come_from = new ArrayList<Vertex>();
+					come_from = new ArrayList<Vertex3i>();
 				}
 
 				float priority = (Math.abs(requester.getHostTileX() - x) + Math.abs(requester.getHostTileY() - y))*2;
 
-				now.add(new Vertex(x, y, 0), priority);
+				now.add(new Vertex3i(x, y, z, 0), priority);
 				if(costs == null) {
 					costs = new float[WorldMap.getMap().getWidth()][WorldMap.getMap().getHeight()];
 				}
@@ -124,7 +126,7 @@ public class PathFinder extends Thread {
 
 				//visited[now.peek(0).getX()][now.peek(0).getY()] = true;
 				come_from.add(0, now.poll());
-				Vertex tmp;
+				Vertex3i tmp;
 				tmp = getLastVertex().copy();
 				int lastVertexX = getLastVertex().getX();
 				int lastVertexY = getLastVertex().getY();
@@ -138,7 +140,7 @@ public class PathFinder extends Thread {
 
 						//tmp = getLastVertex().copy();
 						tmp.setlocation(lastVertexX - 1 + i,
-								lastVertexY - 1 + j);
+								lastVertexY - 1 + j, getLastVertex().getZ());
 
 						if(tmp.getX() < 0 || tmp.getX() >= costs.length ||
 								tmp.getY() < 0 || tmp.getY() >= costs[0].length) {
@@ -154,9 +156,9 @@ public class PathFinder extends Thread {
 						}
 
 						float newCost;
-						if(WorldMap.getMap().tilePassable(tmp.getX(), tmp.getY(), 0)){
+						if(WorldMap.getMap().tilePassable(tmp.getX(), tmp.getY(), tmp.getZ())){
 							newCost = (float) (lastVertexCost+NoneCost*(Math.abs(i-1)+Math.abs(j-1)));
-							if(WorldMap.getMap().getFirstTypeTask(tmp.getX(), tmp.getY(), 0, Task.WALL_BUILD) != null) {
+							if(WorldMap.getMap().getFirstTypeTask(tmp.getX(), tmp.getY(), tmp.getZ(), Task.WALL_BUILD) != null) {
 								newCost += 40;
 							}
 							//newCost = (float) (lastVertexCost+NoneCost*(Math.abs(i-1)+Math.abs(j-1)));
@@ -169,6 +171,7 @@ public class PathFinder extends Thread {
 							Path foundPath = new Path();
 							int curX = tmp.getX();
 							int curY = tmp.getY();
+							int curZ = tmp.getZ();
 							while(curX != x || curY != y){
 								float curCost = costs[curX][curY];
 								int tmpK = 0;
@@ -186,7 +189,7 @@ public class PathFinder extends Thread {
 								}
 								curX += -1 + tmpK;
 								curY += -1 + tmpN;
-								foundPath.addPoint(new Vertex(curX*WorldMap.tileSize+16, curY*WorldMap.tileSize+16, 0));
+								foundPath.addPoint(new Vertex3i(curX*WorldMap.tileSize+16, curY*WorldMap.tileSize+16, curZ, 0));
 							}
 							now = null;
 							come_from = null;

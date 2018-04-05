@@ -7,7 +7,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import core.DwarfsGame;
 import entities.Creature;
-import util.Vertex;
+import util.Vertex3i;
 import util.path_finding.PathFinderManager;
 import util.tasks.Task;
 import util.tasks.TaskManager;
@@ -149,13 +149,14 @@ public abstract class AI {
 		if(progress_timer >= IDLE_WAIT + 200*PathFinderManager.getInstance().requestNumber()) {
 			int x = (int) (host.getX()/32);
 			int y = (int) (host.getY()/32);
+			int z = host.getZ();
 			if(!waitingForPath) {
 				do {
 					x = (int) (host.getX()/32 + 6 - rand.nextInt(13));
 					y = (int) (host.getY()/32 + 6 - rand.nextInt(13));
-				}while(!map.tilePassable(x, y, 0) || map.getTile(x, y, 0).getFirstTypeTask(Task.WALL_BUILD) != null);
+				}while(!map.tilePassable(x, y, z) || map.getTile(x, y, z).getFirstTypeTask(Task.WALL_BUILD) != null);
 			}
-			findPath(x,y,1,1);
+			findPath(x,y,z,1,1);
 			state = WALKING_STATE;
 			taskFindCooldown = false;
 			progress_timer = 0;
@@ -182,7 +183,8 @@ public abstract class AI {
 	public boolean lookForTalkPartner() {
 		for(int i = 0; i < map.getCreatures().size(); i++) {
 			if(map.getCreatures().get(i).getAI() == this) continue;
-
+			if(host.getZ() != map.getCreatures().get(i).getZ()) continue;
+			
 			if(map.getCreatures().get(i).getAI().getState() == IDLE_STATE) {
 				if(Math.abs(map.getCreatures().get(i).getX() - getHostX()) > 256 ||
 						Math.abs(map.getCreatures().get(i).getY() - getHostY()) > 256) continue;
@@ -191,7 +193,7 @@ public abstract class AI {
 					state = WALKING_STATE;
 					targetAI = map.getCreatures().get(i).getAI();
 					targetAI.setState(BUSY_STATE);
-					findPath(targetAI.getHostTileX()+1, targetAI.getHostTileY(), 1, 1);
+					findPath(targetAI.getHostTileX()+1, targetAI.getHostTileY(), host.getZ(), 1, 1);
 					return true;
 				}
 			}
@@ -225,7 +227,7 @@ public abstract class AI {
 	protected void followThePath(int delta){
 		if(path == null) return;
 		if(path.size() == 0) return;
-		Vertex target = path.peek();
+		Vertex3i target = path.peek();
 		float xSpeed = 0;
 		float ySpeed = 0;
 
@@ -248,15 +250,15 @@ public abstract class AI {
 		host.move(xSpeed*delta, ySpeed*delta);
 	}
 
-	public final void findPath(int x, int y, int BaseCost, int NoneCost){
+	public final void findPath(int x, int y, int z, int BaseCost, int NoneCost){
 		if(waitingForPath || path != null) {
 			return;
 		}
 
-		Vertex from = new Vertex((int)host.getX()/32,(int)host.getY()/32, 0);
+		Vertex3i from = new Vertex3i((int)host.getX()/32,(int)host.getY()/32, host.getZ(), 0);
 
 		waitingForPath = true;
-		PathFinderManager.getInstance().requestPath(x,y,BaseCost,NoneCost,from, this);
+		PathFinderManager.getInstance().requestPath(x,y,z,BaseCost,NoneCost,from, this);
 
 	}
 

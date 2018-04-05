@@ -38,18 +38,19 @@ public class TaskTileMine extends Task {
 			
 			int x = targetTile.getX();
 			int y = targetTile.getY();
+			int z = targetTile.getZ();
 			
-			if(WorldMap.getMap().tilePassable(x-1, y, 0)) {
+			if(WorldMap.getMap().tilePassable(x-1, y, z)) {
 				x--;
-			}else if(WorldMap.getMap().tilePassable(x+1, y, 0)) {
+			}else if(WorldMap.getMap().tilePassable(x+1, y, z)) {
 				x++;
-			}else if(WorldMap.getMap().tilePassable(x, y-1, 0)) {
+			}else if(WorldMap.getMap().tilePassable(x, y-1, z)) {
 				y--;
-			}else if(WorldMap.getMap().tilePassable(x, y+1, 0)) {
+			}else if(WorldMap.getMap().tilePassable(x, y+1, z)) {
 				y++;
 			}
 			
-			worker.findPath(x, y, 1, 1);
+			worker.findPath(x, y, z, 1, 1);
 			taskTimer = 0;
 			taskTime = defaultTaskTime;
 			step++;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ai.AI;
-import util.Vertex;
+import util.Vertex3i;
 
 public class PathFinderManager {
 	private static PathFinderManager instance;
@@ -35,8 +35,8 @@ public class PathFinderManager {
 		}
 	}
 	
-	public void requestPath(int x, int y, int BaseCost, int NoneCost, Vertex from, AI requester) {
-		queue.add(new PathFinderRequest(x,y,BaseCost,NoneCost,from,requester));
+	public void requestPath(int x, int y, int z, int BaseCost, int NoneCost, Vertex3i from, AI requester) {
+		queue.add(new PathFinderRequest(x,y,z,BaseCost,NoneCost,from,requester));
 	}
 	
 	public void update() {

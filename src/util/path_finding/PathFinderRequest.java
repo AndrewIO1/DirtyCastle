@@ -1,19 +1,21 @@
 package util.path_finding;
 
 import ai.AI;
-import util.Vertex;
+import util.Vertex3i;
 
 public class PathFinderRequest {
 	private int x;
 	private int y;
+	private int z;
 	private int BaseCost;
 	private int NoneCost;
-	private Vertex from;
+	private Vertex3i from;
 	private AI requester;
 	
-	public PathFinderRequest(int x, int y, int BaseCost, int NoneCost, Vertex from, AI requester) {
+	public PathFinderRequest(int x, int y, int z, int BaseCost, int NoneCost, Vertex3i from, AI requester) {
 		this.x = x;
 		this.y = y;
+		this.z = z;
 		this.BaseCost = BaseCost;
 		this.NoneCost = NoneCost;
 		this.from = from;
@@ -28,6 +30,10 @@ public class PathFinderRequest {
 		return y;
 	}
 	
+	public int getZ() {
+		return z;
+	}
+	
 	public int getBaseCost() {
 		return BaseCost;
 	}
@@ -36,7 +42,7 @@ public class PathFinderRequest {
 		return NoneCost;
 	}
 	
-	public Vertex getFrom() {
+	public Vertex3i getFrom() {
 		return from;
 	}
 	

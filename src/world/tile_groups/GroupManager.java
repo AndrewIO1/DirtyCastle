@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import util.PriorityQueue;
-import util.Vertex;
+import util.Vertex3i;
 import world.WorldMap;
 import world.Tile.TILE_TYPE;
 
@@ -85,13 +85,13 @@ public class GroupManager {
 
 		if(map.getWall(0, 0, 0) == TILE_TYPE.NONE) map.getTile(0, 0, 0).setGroup(groupCount++);
 
-		PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>();
-		Vertex v = new Vertex(0,0, map.getWeight(0, 0, 0));
+		PriorityQueue<Vertex3i> queue = new PriorityQueue<Vertex3i>();
+		Vertex3i v = new Vertex3i(0,0, map.getWeight(0, 0, 0));
 		visited[v.getX()][v.getY()][0]=true;
 
 		queue.add(v, v.getCost());
 		while(queue.size() > 0){
-			Vertex current = queue.poll();
+			Vertex3i current = queue.poll();
 			boolean nextGroup = false;
 			int group = map.getGroup(current.getX(), current.getY(), 0);
 			
@@ -104,7 +104,7 @@ public class GroupManager {
 				for(int j = y-1; j <= y+1; j++) {
 					if(j < 0 || j >= map.getHeight() || visited[i][j][z] || (i == x && j == y)) continue;
 					
-					queue.add(new Vertex(i, j, map.getWeight(i, j, z)), 
+					queue.add(new Vertex3i(i, j, map.getWeight(i, j, z)), 
 							map.getWeight(i, j, z));
 					visited[i][j][z] = true;
 					if((group == -1 || group == -2) && map.tilePassable(i, j, z)){
