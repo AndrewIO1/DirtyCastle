@@ -87,7 +87,7 @@ public class GameState extends ExtendedState{
 				g.setColor(Color.green.darker());
 				g.fillRect(300, 390, 400f*p/mP, 40);
 				g.setColor(Color.white);
-				g.drawString("Generating tiles: " + MapGenerator.getProgress() + "/" + MapGenerator.getMaxProgress(), 310, 400);
+				g.drawString(MapGenerator.getStatus() + MapGenerator.getProgress() + "/" + MapGenerator.getMaxProgress(), 310, 400);
 				return;
 			}
 			map.render(gc, game, g);

@@ -30,7 +30,9 @@ public class Tile implements Renderable{
 		GRASS(0, "Grass"),
 		ROCK(1, "Rock"),
 		DIRT(2, "Dirt"),
-		WATER(3, "Water");
+		WATER(3, "Water"),
+		STAIRS_D_GRASS(4, "Stairs down"),
+		STAIRS_U_GRASS(5, "Stairs down");
 		
 		private int type;
 		private String name;
@@ -272,6 +274,10 @@ public class Tile implements Renderable{
 
 	public void setWall(TILE_TYPE wall) {
 		this.wallType = wall;
+	}
+	
+	public void setFloor(TILE_TYPE floor) {
+		this.floorType = floor;
 	}
 
 	public void addLoot(MovableObject item) {
