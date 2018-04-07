@@ -2,6 +2,7 @@ package entities;
 //инвентарь
 class InventoryTest { 
 	int[][] inventory = new int[3][4];
+	int item = 0;
 
 	public void checkFreeSpace() {
 		for (int i=0; i < inventory.length; i++) {
@@ -34,7 +35,10 @@ class InventoryTest {
 				} //элемены ряда end
 				
 				if (ticker == itemSize) {
-					for (int k=ticker; k == 0; k--) {inventory[i][k] = 1;}
+					item++;
+					for (int k=ticker-1; k >= 0; k--) {
+						inventory[i][k] = item;
+					}
 					isInside = true;
 					System.out.println("Поместили");
 					break;}
@@ -55,6 +59,14 @@ class TestInv {
 		kekblya.setSize(3);
 		kekblya.setName("Палка Ебалка");
 		inventory.checkFreeSpace();
+		inventory.putItem(kekblya);
+		kekblya.setSize(1);
+		inventory.putItem(kekblya);
+		kekblya.setSize(4);
+		inventory.putItem(kekblya);
+		kekblya.setSize(2);
+		inventory.putItem(kekblya);
+		kekblya.setSize(2);
 		inventory.putItem(kekblya);
 		inventory.checkFreeSpace();
 
