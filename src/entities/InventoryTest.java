@@ -14,29 +14,35 @@ class InventoryTest {
 
 	public void putItem(SomeItem inv) {
 		int itemSize = inv.getSize();
+		boolean isInside = false;
+		//		Сравнение предмета и длины инвентаря
 		if (itemSize > inventory[0].length) {
 			System.out.println("Нет места для предмета " + inv.getName());
 		}
+		//		Если место есть, то ебашит цикл
 		else {
-			for (int i=0; i < inventory.length; i++) {
+			for (int i=0; i < inventory.length; i++) { //РЯД
 				int ticker = 0;
-				for (int j=0; j < inventory[i].length; j++) {
+
+				for (int j=0; j < inventory[i].length; j++) { //ЭЛЕМЕНТЫ РЯДА
 
 					if (inventory[i][j] == 0) {
 						ticker++;
 					}
 					else {ticker = 0;}
 					if (ticker == itemSize) {break;}
-				}
-					if (ticker == itemSize) {
-						System.out.println("Поместили");
-						break;
-					}
-					
+				} //элемены ряда end
+				
+				if (ticker == itemSize) {
+					for (int k=ticker; k == 0; k--) {inventory[i][k] = 1;}
+					isInside = true;
+					System.out.println("Поместили");
+					break;}
 			}
 		}
 	}
 }
+
 
 
 
@@ -50,6 +56,7 @@ class TestInv {
 		kekblya.setName("Палка Ебалка");
 		inventory.checkFreeSpace();
 		inventory.putItem(kekblya);
+		inventory.checkFreeSpace();
 
 	}
 }
