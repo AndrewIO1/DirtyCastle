@@ -12,7 +12,7 @@ public class PathFinderRequest {
 	private Vertex3i from;
 	private AI requester;
 	
-	public PathFinderRequest(int x, int y, int z, int BaseCost, int NoneCost, Vertex3i from, AI requester) {
+	protected PathFinderRequest(int x, int y, int z, int BaseCost, int NoneCost, Vertex3i from, AI requester) {
 		this.x = x;
 		this.y = y;
 		this.z = z;

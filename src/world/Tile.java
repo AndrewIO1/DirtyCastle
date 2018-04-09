@@ -297,7 +297,8 @@ public class Tile implements Renderable{
 	public boolean tilePassable() {
 		
 		return getObject() == null &&
-				getWall() == TILE_TYPE.NONE && 
+				(getWall() == TILE_TYPE.NONE ||
+				getWall() == TILE_TYPE.STAIRS_U_GRASS) && 
 				getFloor() != TILE_TYPE.NONE &&
 				getFloor() != TILE_TYPE.WATER;
 	}

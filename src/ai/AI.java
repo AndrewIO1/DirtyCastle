@@ -292,5 +292,9 @@ public abstract class AI {
 	public int getHostTileY() {
 		return (int) (host.getY()/WorldMap.tileSize);
 	}
+	
+	public int getHostZ() {
+		return host.getZ();
+	}
 
 }
