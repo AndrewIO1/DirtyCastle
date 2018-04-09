@@ -1,74 +1,93 @@
 package entities;
+import java.util.ArrayList;
+
 //инвентарь
 class InventoryTest { 
-	int[][] inventory = new int[3][4];
-	int item = 0;
+	ArrayList<SomeItem> inventory = new ArrayList<SomeItem>();
+	private int maxSpace = 0;
+	private int space = 0;
 
-	public void checkFreeSpace() {
-		for (int i=0; i < inventory.length; i++) {
-			for (int j=0; j < inventory[i].length; j++) {
-				System.out.print(inventory[i][j]);
-			}
-			System.out.println("");
+
+	public void setSpace(int sp) {
+		space = sp;
+	}
+	public int getSpace() {
+		return space;
+	}
+
+	public void setMaxSpace(int max) {
+		maxSpace = max;
+	}
+
+	public int checkFreeSpace() {
+		int free = maxSpace - space;
+		return free;
+
+	}
+
+	public void putItem(SomeItem item) {
+		int size = item.getSize();
+		if (size > maxSpace && size > checkFreeSpace()) {
+			System.out.println("Не влезет");
+		}
+		else {
+			int newSpace = getSpace() + size;
+			System.out.println(newSpace);
+			setSpace(newSpace);
+			inventory.add(item);
 		}
 	}
 
-	public void putItem(SomeItem inv) {
-		int itemSize = inv.getSize();
-		boolean isInside = false;
-		//		Сравнение предмета и длины инвентаря
-		if (itemSize > inventory[0].length) {
-			System.out.println("Нет места для предмета " + inv.getName());
-		}
-		//		Если место есть, то ебашит цикл
-		else {
-			for (int i=0; i < inventory.length; i++) { //РЯД
-				int ticker = 0;
+	public void checkInventory() {
+		System.out.println("Предметы в инвентаре:");
+		int counter = 1;
+		for (SomeItem item : inventory) {
+			System.out.println(counter + ": " + item.getName());
+			counter++;
+			System.out.println("Осталось свободного места: " + checkFreeSpace());
+			System.out.println();
 
-				for (int j=0; j < inventory[i].length; j++) { //ЭЛЕМЕНТЫ РЯДА
-
-					if (inventory[i][j] == 0) {
-						ticker++;
-					}
-					else {ticker = 0;}
-					if (ticker == itemSize) {break;}
-				} //элемены ряда end
-				
-				if (ticker == itemSize) {
-					item++;
-					for (int k=ticker-1; k >= 0; k--) {
-						inventory[i][k] = item;
-					}
-					isInside = true;
-					System.out.println("Поместили");
-					break;}
-			}
 		}
+		System.out.println("Общий вес: " + getSpace());
 	}
 }
-
-
 
 
 //здесь тест
 class TestInv {
 	public static void main(String[] args) {
-		InventoryTest inventory = new InventoryTest();
-		SomeItem kekblya = new SomeItem();
+		InventoryTest inv = new InventoryTest();
+		SomeItem pr = new SomeItem();
+		SomeItem pr2 = new SomeItem();
+		SomeItem pr3 = new SomeItem();
+		SomeItem pr4 = new SomeItem();
+		SomeItem pr5 = new SomeItem();
 
-		kekblya.setSize(3);
-		kekblya.setName("Палка Ебалка");
-		inventory.checkFreeSpace();
-		inventory.putItem(kekblya);
-		kekblya.setSize(1);
-		inventory.putItem(kekblya);
-		kekblya.setSize(4);
-		inventory.putItem(kekblya);
-		kekblya.setSize(2);
-		inventory.putItem(kekblya);
-		kekblya.setSize(2);
-		inventory.putItem(kekblya);
-		inventory.checkFreeSpace();
+		inv.setMaxSpace(10);
+		System.out.println("Осталось свободного места: " + inv.checkFreeSpace());
+		
+		pr.setName("Палка Ебалка");
+		pr.setSize(4);
+		pr2.setName("КомпАсс");
+		pr2.setSize(1);
+		pr3.setName("Жопа");
+		pr3.setSize(3);
+		pr4.setName("Камера Обскура");
+		pr4.setSize(2);
+		pr5.setName("Твоя Мамка");
+		pr5.setSize(7);
+
+
+		inv.putItem(pr);
+		inv.putItem(pr2);
+		inv.putItem(pr3);
+		inv.putItem(pr4);
+		inv.putItem(pr5);
+
+		inv.checkInventory();
+
+
+
 
 	}
 }
