@@ -27,15 +27,14 @@ class InventoryTest {
 
 	public void putItem(SomeItem item) {
 		int size = item.getSize();
-		if (size > maxSpace && size > checkFreeSpace()) {
+		if (size > maxSpace || size > checkFreeSpace()) {
 			System.out.println("Не влезет");
+			return;
 		}
-		else {
-			int newSpace = getSpace() + size;
-			System.out.println(newSpace);
-			setSpace(newSpace);
-			inventory.add(item);
-		}
+		
+		space += size;
+		System.out.println(space);
+		inventory.add(item);
 	}
 
 	public void checkInventory() {
@@ -44,10 +43,10 @@ class InventoryTest {
 		for (SomeItem item : inventory) {
 			System.out.println(counter + ": " + item.getName());
 			counter++;
-			System.out.println("Осталось свободного места: " + checkFreeSpace());
 			System.out.println();
 
 		}
+		System.out.println("Осталось свободного места: " + checkFreeSpace());
 		System.out.println("Общий вес: " + getSpace());
 	}
 }
