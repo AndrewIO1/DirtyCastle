@@ -43,12 +43,12 @@ public abstract class GameObject implements Renderable {
 	protected int maxHp;
 	protected boolean dead = false;
 	protected int variant;
-	
+
 	protected List<Task> objectTasks;
 	protected List<ArrayList<Image>> sprites;//все анимации
-	
+
 	protected WorldMap map;
-	
+
 	public GameObject(String name, float x, float y, int z, int width, int height, float x_anchor, float y_anchor, WorldMap map){
 		this.name = name;
 		this.x = x;
@@ -67,7 +67,7 @@ public abstract class GameObject implements Renderable {
 		objectTasks = new ArrayList<Task>(0);
 		this.map = map;
 	}
-	
+
 	public GameObject(Builder builder){
 		name = builder.name;
 		x = builder.x;
@@ -87,28 +87,28 @@ public abstract class GameObject implements Renderable {
 		maxHp = builder.maxHp;
 		variant = builder.variant;
 		map = builder.map;
-		
+
 		sprites = new ArrayList<ArrayList<Image>>(0);
 		objectTasks = new ArrayList<Task>(0);
 	}
-	
+
 	public void setLocation(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	public Tile getTile() {
 		return WorldMap.getMap().getTile((int)x/WorldMap.tileSize, (int)y/WorldMap.tileSize, z);
 	}
-	
+
 	public void addTask(Task task) {
 		objectTasks.add(task);
 	}
-	
+
 	public void removeTask(Task task) {
 		objectTasks.remove(task);
 	}
-	
+
 	public Task getFirstTypeTask(int type) {
 		if(objectTasks.size() == 0) return null;
 		for(int i = 0; i < objectTasks.size(); i++) {
@@ -118,36 +118,40 @@ public abstract class GameObject implements Renderable {
 		}
 		return null;
 	}
-	
+
 	public void update(GameContainer gc, StateBasedGame game, int delta) {
 		updateAnimation(delta);
 		customUpdate(gc, game, delta);
 	}
-	
+
 	public final void render(GameContainer gc, StateBasedGame game, Graphics g) {//Отрисовка
-		
+
 		customRenderUnder(gc, game, g);
-		
+
 		Image sprite = getCurrentSprite();
-		
+
 		if(sprite != null){//Если кадра нет, то выход
 			//Если всё нормас, то рисуется спрайт с нужным поворотом в координатах объекта
 			sprite = sprite.getScaledCopy(width, height).getFlippedCopy(flipX, flipY);
 			sprite.setCenterOfRotation(width*x_anchor, height*y_anchor);
 			sprite.rotate(rotation);
-			
+
 			if(!isSelected()) {
-				g.drawImage(sprite, x-width*x_anchor, y-height*y_anchor);
+				if(z != WorldMap.getMap().getZ()) {
+					g.drawImage(sprite, x-width*x_anchor, y-height*y_anchor, Color.darkGray);
+				}else {
+					g.drawImage(sprite, x-width*x_anchor, y-height*y_anchor);
+				}
 			}else {
 				sprite.drawFlash(x-width*x_anchor, y-height*y_anchor, width, height, Color.pink.darker());
 				//g.drawImage(sprite, x-width*x_anchor, y-height*y_anchor, Color.pink);
 			}
-			
+
 		}
-		
+
 		customRenderAbove(gc, game, g);
 	}
-	
+
 	public final String getName() {
 		return name;
 	}
@@ -159,23 +163,23 @@ public abstract class GameObject implements Renderable {
 	public final float getY(){//Вертикальные координаты
 		return y;
 	}
-	
+
 	public final int getZ(){
 		return z;
 	}
-	
+
 	public final int getWidth(){//Ширина объекта
 		return width;
 	}
-	
+
 	public final int getHeight(){//Высота объекта
 		return height;
 	}
-	
+
 	public final boolean flippedHorizontally(){//Перевёрнут ли спрайт по горизонтали?
 		return flipX;
 	}
-	
+
 	public final boolean flippedVertically(){//Перевёрнут ли спрайт по вертикали?
 		return flipY;
 	}
@@ -209,18 +213,18 @@ public abstract class GameObject implements Renderable {
 		}
 		return sprites.get(animationId).get(animationFrame);//Возвращает текущий кадр текущей анимации
 	}
-	
+
 	public final int getAnimation(){//Возвращает id текущей анимации
 		return animationId;
 	}
-	
+
 	public final int getAnimationFrame(){//Возвращает кадр текущей анимации
 		return animationFrame;
 	}
-	
+
 	public final void changeAnimation(int id, int frame, int frameTime) {
 		if(animationId == id) return;
-		
+
 		animationId = id;
 		if(animationId >= sprites.size() || animationId < 0) {
 			animationId = 0;
@@ -231,15 +235,15 @@ public abstract class GameObject implements Renderable {
 		}
 		animationTime = frameTime;
 	}
-	
+
 	public final void changeAnimation(int id, int frameTime) {
 		changeAnimation(id, 0, frameTime);
 	}
-	
+
 	public final void changeAnimation(int id) {
 		changeAnimation(id, 0, 100);
 	}
-	
+
 	public final void updateAnimation(int delta) {
 		animationTimer+=delta;
 		if(animationTimer >= animationTime) {
@@ -250,43 +254,43 @@ public abstract class GameObject implements Renderable {
 			}
 		}
 	}
-	
+
 	public final WorldMap getMap() {
 		return map;
 	}
-	
+
 	public final void damage(int damage) {
 		hp -= damage;
 		if(hp <= 0 && !dead) {
 			kill();
 		}
 	}
-	
+
 	public final boolean isDead() {
 		return dead;
 	}
-	
+
 	public final void kill() {
 		dead = true;
 		WorldMap.getMap().requestUpdate(this);
 		killCustom();
 	}
-	
+
 	public int getVariant() {
 		return variant;
 	}
-	
+
 	public int getPriority() {
 		return (int) getY();
 	}
-	
+
 	public abstract boolean isSelected();//Выделен ли объект
 	public abstract EntityType getType();//Тип объекта
 	protected abstract void customUpdate(GameContainer gc, StateBasedGame game, int delta);
 	protected abstract void customRenderUnder(GameContainer gc, StateBasedGame game, Graphics g);//Рисует под спрайтом
 	protected abstract void customRenderAbove(GameContainer gc, StateBasedGame game, Graphics g);//Рисует над спрайтом
 	protected abstract void killCustom();//Игровое уничтожение объекта с выпадением лута или ещё какими-то событиями
-	
+
 	public static abstract class Builder{
 		private String name;//имя объекта, для дебага
 		private float x = 0;//координаты в игре
@@ -306,7 +310,7 @@ public abstract class GameObject implements Renderable {
 		private int maxHp = 0;
 		private int variant = 0;
 		private WorldMap map = WorldMap.getMap();
-		
+
 		public Builder(String name) {this.name = name; }
 		public Builder name(String name) { this.name = name; return this; }
 		public Builder x(float x) { this.x = x; return this; }
@@ -326,10 +330,10 @@ public abstract class GameObject implements Renderable {
 		public Builder maxHp(int maxHp) { this.maxHp = maxHp; return this; }
 		public Builder variant(int variant) { this.variant = variant; return this; }
 		public Builder map(WorldMap map) { this.map = map; return this; }
-		
+
 		public String name() { return name; }
 		public int variant() { return variant; }
 		public int maxHp() { return maxHp; }
 	}
-	
+
 }

@@ -16,6 +16,7 @@ import core.GameState;
 import entities.Creature;
 import entities.EntityType;
 import entities.GameObject;
+import entities.StaticObject;
 import entities.creatures.TestCreature;
 import graphics.Renderable;
 import util.EntityFactory;
@@ -178,6 +179,11 @@ public class WorldMap {
 			//	//tiles[x][y][z].setObject(newTree);
 			//}
 		}*/
+	}
+	
+	public void placeObject(short x, short y, short z, StaticObject object) {
+		tiles[z][x][y].setObject(object);
+		allObjects.add(object);
 	}
 	
 	public int getZ() {

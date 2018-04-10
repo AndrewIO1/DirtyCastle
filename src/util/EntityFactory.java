@@ -69,6 +69,11 @@ public class EntityFactory {
 		return tree.build();
 	}
 	
+	public static void spawnTree(short x, short y, short z) {
+		Tree tree = generateTree(x*WorldMap.tileSize, y*WorldMap.tileSize, z);
+		map.placeObject(x, y, z, tree);
+	}
+	
 	public static void spawnLogBig(Tree tree) {
 		if(tree == null) return;
 		map.addObject(new LogBig.Builder(tree).build());

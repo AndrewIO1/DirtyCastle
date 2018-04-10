@@ -44,21 +44,21 @@ public class MapGenerator {
 						nextTile: for(short j = 0; j < mapSingleton.getHeight(); j++){
 							progress++;
 							if(mapSingleton.getTile(i, j, k).getFloor() != TILE_TYPE.GRASS) continue;
-							
+
 							for(int x = i-1; x <= i+1; x++) {
 								for(int y = j-1; y <= j+1; y++) {
 									if(Math.abs(i-x) + Math.abs(j-y) >= 2) continue;
 									if(x == i && j == y) continue;
-									
+
 									check = mapSingleton.getTile(x, y, k);
 									if(check == null) continue;
 									if(check.getFloor() != TILE_TYPE.NONE) continue;
-									
+
 									check = mapSingleton.getTile(x, y, k+1);
 									if(check == null) continue;
 									if(check.getFloor() == TILE_TYPE.NONE) continue;
 									if(check.getWall() != TILE_TYPE.NONE) continue;
-									
+
 									if(mapSingleton.getTile(i, j, k+1).getFloor() == TILE_TYPE.NONE) continue;
 									mapSingleton.getTile(i, j, k+1).setWall(TILE_TYPE.STAIRS_U_GRASS);
 									mapSingleton.getTile(i, j, k).setFloor(TILE_TYPE.STAIRS_D_GRASS);
@@ -66,6 +66,28 @@ public class MapGenerator {
 								}
 							}
 						}
+					}
+				}
+				progress = 0;
+				maxProgress = mapSingleton.getWidth()*mapSingleton.getHeight();
+				status = "Growing trees: ";
+				for(short i = 0; i < mapSingleton.getWidth(); i++){
+					for(short j = 0; j < mapSingleton.getHeight(); j++){
+						progress++;
+						if(diagram.getTreeValue(i, j) < 0.6) continue;
+						
+						short z = -1;
+						Tile selected;
+						do {
+							z++;
+							selected = mapSingleton.getTile(i, j, z);
+							if(selected.getFloor() != TILE_TYPE.NONE && selected.getFloor() != TILE_TYPE.GRASS) {
+								z = -1;
+								break;
+							}
+						}while(selected.getWall() != TILE_TYPE.NONE || selected.getFloor() != TILE_TYPE.GRASS);
+						if(z == -1) continue;
+						EntityFactory.spawnTree(i, j, z);
 					}
 				}
 				//генерация карты
@@ -81,7 +103,7 @@ public class MapGenerator {
 		generatorThread.start();
 
 	}
-	
+
 	public static synchronized String getStatus() {
 		return status;
 	}

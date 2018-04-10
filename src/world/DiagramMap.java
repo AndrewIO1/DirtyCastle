@@ -361,4 +361,14 @@ public class DiagramMap {
 		}
 	}
 	
+	public double getTreeValue(double x, double y) {
+		x = sX + x*scale;
+		y = sY + y*scale;
+		double t = (noise.generateSimplexNoise(x/20.-512, y/20.-512)+1)*0.6;
+		t += (noise.generateSimplexNoise(x*4.-512, y*4.-512)+1)*0.3;
+		t/=2.;
+		
+		return t;
+	}
+	
 }
