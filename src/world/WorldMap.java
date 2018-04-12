@@ -47,7 +47,7 @@ public class WorldMap {
 	private int cameraX = 0;
 	private int cameraY = 0;
 	private int z = 15;
-	
+
 	private PriorityQueue<Renderable> renderQueue;
 
 
@@ -56,6 +56,7 @@ public class WorldMap {
 	private int selectionX;
 	private int selectionY;
 	private boolean selecting;
+	private boolean mapScrollLocked = false;
 
 	private WorldMap(Tile[][][] tiles){
 		//Êîíñòðóêòîð êàðòû, çàêèäûâàåøü âíóòðü òàéëû (íå îáÿçàòåëüíî çàïîëíåííûå)
@@ -121,7 +122,7 @@ public class WorldMap {
 	public int getHeight(){
 		return tiles[0][0].length;
 	}
-	
+
 	public int getDepth() {
 		return tiles.length;
 	}
@@ -180,12 +181,12 @@ public class WorldMap {
 			//}
 		}*/
 	}
-	
+
 	public void placeObject(short x, short y, short z, StaticObject object) {
 		tiles[z][x][y].setObject(object);
 		allObjects.add(object);
 	}
-	
+
 	public int getZ() {
 		return z;
 	}
@@ -247,7 +248,7 @@ public class WorldMap {
 	}
 
 	public void update(GameContainer gc, DwarfsGame game, int delta){
-		
+
 		if(gc.getInput().isKeyPressed(Input.KEY_E)) {
 			GameState.setAction(GameState.getAction() + 1);
 		}else if(gc.getInput().isKeyPressed(Input.KEY_Q)) {
@@ -445,19 +446,36 @@ public class WorldMap {
 
 		cameraMouseControls(gc,game,delta);
 
+		if(gc.getInput().isKeyDown(Input.KEY_LSHIFT)) {
+			if(gc.getInput().isKeyPressed(Input.KEY_UP)) {
+				if(z > 0) {
+					z--;
+				}
+			}
+			if(gc.getInput().isKeyPressed(Input.KEY_DOWN)) {
+				if(z < getDepth()-1) {
+					z++;
+				}
+			}
+		}else {
 
-		if(gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
-			cameraX += delta;
-		}
-		if(gc.getInput().isKeyDown(Input.KEY_LEFT)) {
-			cameraX -= delta;
-		}
+			if(gc.getInput().isKeyPressed(Input.KEY_CIRCUMFLEX)) {
+				mapScrollLocked = !mapScrollLocked;
+			}
 
-		if(gc.getInput().isKeyDown(Input.KEY_DOWN)) {
-			cameraY += delta;
-		}
-		if(gc.getInput().isKeyDown(Input.KEY_UP)) {
-			cameraY -= delta;
+			if(gc.getInput().isKeyDown(Input.KEY_RIGHT)) {
+				cameraX += delta;
+			}
+			if(gc.getInput().isKeyDown(Input.KEY_LEFT)) {
+				cameraX -= delta;
+			}
+
+			if(gc.getInput().isKeyDown(Input.KEY_DOWN)) {
+				cameraY += delta;
+			}
+			if(gc.getInput().isKeyDown(Input.KEY_UP)) {
+				cameraY -= delta;
+			}
 		}
 
 		if(cameraX + Display.getWidth() > getWidth()*tileSize) {
@@ -486,6 +504,7 @@ public class WorldMap {
 		int mouseY = gc.getInput().getMouseY();
 
 		if(!gc.getInput().isMouseButtonDown(Input.MOUSE_MIDDLE_BUTTON)) {
+			if(mapScrollLocked) return;
 			oldX = -1;
 			oldY = -1;
 			if(mouseX <= cameraMovementBorder) {
@@ -526,7 +545,7 @@ public class WorldMap {
 	}
 
 	public void render(GameContainer gc, StateBasedGame game, Graphics g){
-		
+
 		g.translate(-cameraX, -cameraY);
 		//Äàëüøå êàðòà
 
@@ -539,9 +558,9 @@ public class WorldMap {
 
 
 		renderQueue.clear();
-		
+
 		Tile renderTile;
-		
+
 		for(int i = renderXStart; i < renderXEnd; i++) {
 			for(int j = renderYStart; j < renderYEnd; j++) {
 				for(int k = z; k < getDepth(); k++) {
@@ -559,6 +578,7 @@ public class WorldMap {
 					allObjects.get(i).getX() < cameraX+Display.getWidth()+allObjects.get(i).getWidth() &&
 					allObjects.get(i).getY() > cameraY-allObjects.get(i).getHeight() &&
 					allObjects.get(i).getY() < cameraY+Display.getHeight()+allObjects.get(i).getHeight()) {
+				if(allObjects.get(i).getZ() < z) continue;
 				renderQueue.add(allObjects.get(i), allObjects.get(i).getPriority());
 			}
 		}
@@ -623,13 +643,13 @@ public class WorldMap {
 				wallCorrection = -16;
 			}
 			g.fillRect(i*tileSize-cameraX, j*tileSize-cameraY + wallCorrection, tileSize, tileSize);
-			
+
 			/*g.setColor(Color.white);
 			g.drawString(tiles[0][i][j].toString(), 900, 300);*/
 		}
 
 		g.setColor(Color.white);
-		
+
 		g.drawString(GameState.getActionName(), 1000, 370);
 
 		g.drawString("PathFinders working: " + PathFinderManager.getInstance().getCalculatingPathFinders() + 
@@ -658,7 +678,7 @@ public class WorldMap {
 
 	private static volatile WorldMap mapSingleton;
 	public static final int tileSize = 32;
-	
+
 	public static synchronized WorldMap createMap() {
 		//TODO ÏÅÐÅÄÅËÀÒÜ, ÏÎÑÒÀÂÈÒÜ 32 Â ÏÅÐÂÛÅ ÑÊÎÁÊÈ, À 256 Â ÏÎÑËÅÄÍÈÅ
 		mapSingleton = new WorldMap(new Tile[32][256][256]);
