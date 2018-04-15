@@ -80,78 +80,58 @@ public class GroupManager {
 
 	public void setMapGroups() {
 		int groupCount = 0;
-		int startZ = 16;
 		boolean[][][] visited = new boolean[32][256][256];
-
-		if(map.tilePassable(0, 0, startZ)) map.getTile(0, 0, startZ).setGroup(groupCount++);
-
 		PriorityQueue<Vertex3i> queue = new PriorityQueue<Vertex3i>();
-		Vertex3i v = new Vertex3i(0,0,startZ, map.getWeight(0, 0, startZ));
-		visited[startZ][v.getX()][v.getY()]=true;
 
-		queue.add(v, v.getCost());
-		while(queue.size() > 0){
-			Vertex3i current = queue.poll();
-			boolean nextGroup = false;
+		for(int iX = 0; iX < map.getWidth(); iX++) {
+			for(int jY = 0; jY < map.getHeight(); jY++) {
+				for(int k = 0; k < map.getDepth(); k++) {
 
-			int x = current.getX();
-			int y = current.getY();
-			int z = current.getZ();
 
-			int group = map.getGroup(x, y, z);
+					if(visited[k][iX][jY] || !map.tilePassable(iX, jY, k)) continue;
+					map.getTile(iX, jY, k).setGroup(groupCount++);
 
-			for(int m = z-1; m <= z+1; m++) {
-				if(m < 0 || m >= map.getDepth()) continue;
-				/*if(m != z) {
-					if(map.getWall(x, y, z) != TILE_TYPE.STAIRS_U_GRASS &&
-					   map.getFloor(x, y, z) != TILE_TYPE.STAIRS_D_GRASS) {
-						continue;
-					}
-				}*/
-				for(int i = x-1 ; i <= x+1; i++) {
-					if(i < 0 || i >= map.getWidth()) continue;
-					for(int j = y-1; j <= y+1; j++) {
-						if(j < 0 || j >= map.getHeight() || visited[m][i][j]) continue;
-						if(m != z) {
-							if (i != x || j != y) continue;
-						}else {
-							if (i == x && j == y) continue;
-						}
+					Vertex3i v = new Vertex3i(iX,jY,k, map.getWeight(iX, jY, k));
+					visited[v.getZ()][v.getX()][v.getY()]=true;
 
-						queue.add(new Vertex3i(i, j, m, map.getWeight(i, j, m)), 
-								map.getWeight(i, j, m));
-						visited[m][i][j] = true;
-						if((group == -1 || group == -2) && map.tilePassable(i, j, m)){
-							map.getTile(i, j, m).setGroup(groupCount);
-							nextGroup = true;
+					queue.add(v, v.getCost());
+					while(queue.size() > 0){
+						Vertex3i current = queue.poll();
 
-						}else if(map.tilePassable(i, j, m)){
-							map.getTile(i, j, m).setGroup(group);
-						}else {
-							boolean unreachable = true;
-							outer: for(int k = i-1; k <= i+1; k++) {
-								for(int h = j-1; h <= j+1; h++) {
-									if(k == i-1 && h == j-1) continue;
-									if(k == i+1 && h == j-1) continue;
-									if(k == i-1 && h == j+1) continue;
-									if(k == i+1 && h == j+1) continue;
-									if(map.tilePassable(k,h,m)) {
-										unreachable = false;
-										break outer;
+						int x = current.getX();
+						int y = current.getY();
+						int z = current.getZ();
+
+						int group = map.getGroup(x, y, z);
+
+						for(int m = z-1; m <= z+1; m++) {
+							if(m < 0 || m >= map.getDepth()) continue;
+							for(int i = x-1 ; i <= x+1; i++) {
+								if(i < 0 || i >= map.getWidth()) continue;
+								for(int j = y-1; j <= y+1; j++) {
+									if(j < 0 || j >= map.getHeight() || visited[m][i][j]) continue;
+									if(m != z) {
+										if (i != x || j != y) continue;
+									}else {
+										if (i == x && j == y) continue;
 									}
+
+									if(visited[m][i][j]) continue;
+									if(map.tilePassable(i, j, m)){
+										map.getTile(i, j, m).setGroup(group);
+										queue.add(new Vertex3i(i, j, m, map.getWeight(i, j, m)), 
+												map.getWeight(i, j, m));
+									}else{
+										map.getTile(i, j, m).setGroup(-1);
+									}
+
+									visited[m][i][j] = true;
+									//Новые тайлы раскидываются по группам только если они проходимы
 								}
 							}
-							if(unreachable) {
-								map.getTile(i, j, m).setGroup(-2);
-							}
 						}
-						//Новые тайлы раскидываются по группам только если они проходимы
 					}
 				}
-			}
-
-			if(nextGroup){
-				groupCount++;
 			}
 		}
 	}

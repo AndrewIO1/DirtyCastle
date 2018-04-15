@@ -67,7 +67,7 @@ public class Tile implements Renderable{
 		WorldMap map = WorldMap.getMap();
 		this.wallType = wallType;
 		this.floorType = floorType;
-		group = map.groupManager().getGroup(-1);
+		group = map.groupManager().getGroup(-2);
 		itemPile = new ArrayList<MovableObject>(1);
 		tileTasks = new ArrayList<Task>(1);
 		partOfPaths = new ArrayList<Path>(1);
