@@ -247,7 +247,7 @@ public class Tile implements Renderable{
 		//g.setColor(Color.white);
 		//g.drawString("P:" + partOfPaths.size(), x, y); //Кол-во путей, проходящих через тайл
 		//g.drawString("C:" + creaturesInside.size(), x, y); //Кол-во существ в тайле
-		//g.drawString("G:" + group.getId(), x, y); //Группа тайла
+		g.drawString("G:" + group.getId(), x, y); //Группа тайла
 		//g.drawRect(x, y, 32, 32); //Дебаг сетка на тайлах
 	}
 

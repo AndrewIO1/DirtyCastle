@@ -143,7 +143,8 @@ public abstract class AI {
 		if(currentTask != null) return;
 
 		if(progress_timer == 0) {
-			if(lookForTalkPartner()) return;
+			//TODO сделать нормально
+			//if(lookForTalkPartner()) return;
 		}
 
 		if(progress_timer >= IDLE_WAIT + 200*PathFinderManager.getInstance().requestNumber()) {

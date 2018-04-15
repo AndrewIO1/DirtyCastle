@@ -69,34 +69,35 @@ public abstract class Task {
 	protected void obstacleDestroyed(AI worker) {
 		int x = targetTile.getX();
 		int y = targetTile.getY();
+		int z = targetTile.getZ();
 		
-		Task enableTile = WorldMap.getMap().getFirstTypeTask(x-1, y, 0, TILE_MINE);
-		if(WorldMap.getMap().getGroup(x-1, y, 0) == -2) {
-			WorldMap.getMap().getTile(x-1, y, 0).setGroup(-1);
+		Task enableTile = WorldMap.getMap().getFirstTypeTask(x-1, y, z, TILE_MINE);
+		if(WorldMap.getMap().getGroup(x-1, y, z) == -2) {
+			WorldMap.getMap().getTile(x-1, y, z).setGroup(-1);
 		}
 		if(enableTile != null) {
 			enableTile.enable();
 		}
 		
-		enableTile = WorldMap.getMap().getFirstTypeTask(x+1, y, 0, TILE_MINE);
-		if(WorldMap.getMap().getGroup(x+1, y, 0) == -2) {
-			WorldMap.getMap().getTile(x+1, y, 0).setGroup(-1);
+		enableTile = WorldMap.getMap().getFirstTypeTask(x+1, y, z, TILE_MINE);
+		if(WorldMap.getMap().getGroup(x+1, y, z) == -2) {
+			WorldMap.getMap().getTile(x+1, y, z).setGroup(-1);
 		}
 		if(enableTile != null) {
 			enableTile.enable();
 		}
 		
-		enableTile = WorldMap.getMap().getFirstTypeTask(x, y-1, 0, TILE_MINE);
-		if(WorldMap.getMap().getGroup(x, y-1, 0) == -2) {
-			WorldMap.getMap().getTile(x, y-1, 0).setGroup(-1);
+		enableTile = WorldMap.getMap().getFirstTypeTask(x, y-1, z, TILE_MINE);
+		if(WorldMap.getMap().getGroup(x, y-1, z) == -2) {
+			WorldMap.getMap().getTile(x, y-1, z).setGroup(-1);
 		}
 		if(enableTile != null) {
 			enableTile.enable();
 		}
 		
-		enableTile = WorldMap.getMap().getFirstTypeTask(x, y+1, 0, TILE_MINE);
-		if(WorldMap.getMap().getGroup(x, y+1, 0) == -2) {
-			WorldMap.getMap().getTile(x, y+1, 0).setGroup(-1);
+		enableTile = WorldMap.getMap().getFirstTypeTask(x, y+1, z, TILE_MINE);
+		if(WorldMap.getMap().getGroup(x, y+1, z) == -2) {
+			WorldMap.getMap().getTile(x, y+1, z).setGroup(-1);
 		}
 		if(enableTile != null) {
 			enableTile.enable();
@@ -104,20 +105,21 @@ public abstract class Task {
 		
 		int workerX = worker.getHostTileX();
 		int workerY = worker.getHostTileY();
+		int workerZ = worker.getHostZ();
 		
-		targetTile.setGroup(WorldMap.getMap().getGroupObject(workerX, workerY, 0));
+		targetTile.setGroup(WorldMap.getMap().getGroupObject(workerX, workerY, workerZ));
 		
 		ArrayList<TileGroup> connectedGroups = new ArrayList<TileGroup>();
 		
-		connectedGroups.add(WorldMap.getMap().getGroupObject(workerX, workerY, 0));
+		connectedGroups.add(WorldMap.getMap().getGroupObject(workerX, workerY, workerZ));
 		
 		for(int i = -1; i <= 1; i++) {
 			for(int j = -1; j <= 1; j++) {
 				if(Math.abs(workerX-(x+i)) + Math.abs(workerY-(y+j)) <= 1) continue;
 				if(i == 0 && j == 0) continue;
-				if(WorldMap.getMap().getGroup(x+i, y+j, 0) < 0) continue;
-				if(connectedGroups.contains(WorldMap.getMap().getGroupObject(x+i, y+j, 0))) continue;
-				connectedGroups.add(WorldMap.getMap().getGroupObject(x+i, y+j, 0));
+				if(WorldMap.getMap().getGroup(x+i, y+j, z) < 0) continue;
+				if(connectedGroups.contains(WorldMap.getMap().getGroupObject(x+i, y+j, z))) continue;
+				connectedGroups.add(WorldMap.getMap().getGroupObject(x+i, y+j, z));
 			}
 		}
 		
@@ -150,7 +152,7 @@ public abstract class Task {
 	protected void setTargetTile(GameObject target) {
 		Tile newTarget = WorldMap.getMap().getTile((int)target.getX()/WorldMap.tileSize, 
 												   (int)target.getY()/WorldMap.tileSize, 
-												   0);
+												   target.getZ());
 		setTargetTile(newTarget);
 	}
 

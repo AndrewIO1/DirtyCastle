@@ -52,6 +52,7 @@ public class TaskManager {
 
 		int x = citizen.getHostTileX();
 		int y = citizen.getHostTileY();
+		int z = citizen.getHostZ();
 		int i = 0;
 		int j = 0;
 		int step = 0;
@@ -59,41 +60,41 @@ public class TaskManager {
 		while(step < map.getWidth()) {
 			step++;
 
-			if(map.getTile(x+i, y+j, 0) == null) {
+			if(map.getTile(x+i, y+j, z) == null) {
 				i-= step;
 			}else {
 				for(int k = 0; k < step; k++) {
 					i--;
-					if(checkTreeTask(x+i, y+j, 0, citizen)) return;
+					if(checkTreeTask(x+i, y+j, z, citizen)) return;
 				}
 			}
 
-			if(map.getTile(x+i, y+j, 0) == null) {
+			if(map.getTile(x+i, y+j, z) == null) {
 				j-= step;
 			}else {
 				for(int k = 0; k < step; k++) {
 					j--;
-					if(checkTreeTask(x+i, y+j, 0, citizen)) return;
+					if(checkTreeTask(x+i, y+j, z, citizen)) return;
 				}
 			}
 
 			step++;
 
-			if(map.getTile(x+i, y+j, 0) == null) {
+			if(map.getTile(x+i, y+j, z) == null) {
 				i+= step;
 			}else {
 				for(int k = 0; k < step; k++) {
 					i++;
-					if(checkTreeTask(x+i, y+j, 0, citizen)) return;
+					if(checkTreeTask(x+i, y+j, z, citizen)) return;
 				}
 			}
 
-			if(map.getTile(x+i, y+j, 0) == null) {
+			if(map.getTile(x+i, y+j, z) == null) {
 				j+= step;
 			}else {
 				for(int k = 0; k < step; k++) {
 					j++;
-					if(checkTreeTask(x+i, y+j, 0, citizen)) return;
+					if(checkTreeTask(x+i, y+j, z, citizen)) return;
 				}
 			}
 		}
@@ -147,17 +148,18 @@ public class TaskManager {
 		
 		int x = task.targetTile.getX();
 		int y = task.targetTile.getY();
+		int z = task.targetTile.getZ();
 		
 		Tile creatureGroup = creature.getHost().getTile();
 		
-		if(map.getGroup(x, y, 0) == creatureGroup.getGroup()) {
+		if(map.getGroup(x, y, z) == creatureGroup.getGroup()) {
 			return true;
 		}
 		
 		for(int i = x-1; i <= x+1; i++) {
 			for(int j = y-1; j <= y+1; j++) {
 				if(i == x && j == y) continue;
-				if(map.getGroup(i, j, 0) == creatureGroup.getGroup()) {
+				if(map.getGroup(i, j, z) == creatureGroup.getGroup()) {
 					return true;
 				}
 			}

@@ -277,7 +277,6 @@ public class WorldMap {
 				int z = needUpdate.get(i).getZ();
 				allObjects.remove(needUpdate.get(i));
 				needUpdate.remove(i);
-				//TODO èñïğàâèòü íà íîğìàëüíîå
 				miniMap.updateMiniMap(x,y,z,1,1,1);
 				i--;
 				continue;
@@ -680,7 +679,6 @@ public class WorldMap {
 	public static final int tileSize = 32;
 
 	public static synchronized WorldMap createMap() {
-		//TODO ÏÅĞÅÄÅËÀÒÜ, ÏÎÑÒÀÂÈÒÜ 32 Â ÏÅĞÂÛÅ ÑÊÎÁÊÈ, À 256 Â ÏÎÑËÅÄÍÈÅ
 		mapSingleton = new WorldMap(new Tile[32][256][256]);
 		return mapSingleton;
 	}

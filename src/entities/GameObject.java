@@ -135,15 +135,16 @@ public abstract class GameObject implements Renderable {
 			sprite = sprite.getScaledCopy(width, height).getFlippedCopy(flipX, flipY);
 			sprite.setCenterOfRotation(width*x_anchor, height*y_anchor);
 			sprite.rotate(rotation);
-
+			int zOffset = (map.getZ() - z)*16;
+			
 			if(!isSelected()) {
 				if(z != WorldMap.getMap().getZ()) {
-					g.drawImage(sprite, x-width*x_anchor, y-height*y_anchor, Color.darkGray);
+					g.drawImage(sprite, x-width*x_anchor, y-height*y_anchor - zOffset, Color.darkGray);
 				}else {
-					g.drawImage(sprite, x-width*x_anchor, y-height*y_anchor);
+					g.drawImage(sprite, x-width*x_anchor, y-height*y_anchor - zOffset);
 				}
 			}else {
-				sprite.drawFlash(x-width*x_anchor, y-height*y_anchor, width, height, Color.pink.darker());
+				sprite.drawFlash(x-width*x_anchor, y-height*y_anchor - zOffset, width, height, Color.pink.darker());
 				//g.drawImage(sprite, x-width*x_anchor, y-height*y_anchor, Color.pink);
 			}
 

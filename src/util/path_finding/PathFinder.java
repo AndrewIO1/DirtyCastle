@@ -179,7 +179,8 @@ public class PathFinder extends Thread {
 							tmp.setlocation(lastVertexX - 1 + i,
 									lastVertexY - 1 + j, lastVertexZ - 1 + m);
 
-							if(tmp.getX() < 0 || tmp.getX() >= costs[0].length ||
+							if(tmp.getZ() < 0 || tmp.getZ() >= costs.length ||
+									tmp.getX() < 0 || tmp.getX() >= costs[0].length ||
 									tmp.getY() < 0 || tmp.getY() >= costs[0][0].length) {
 								continue;
 							}
@@ -211,6 +212,7 @@ public class PathFinder extends Thread {
 								int curZ = tmp.getZ();
 								while(curX != x || curY != y || curZ != z){
 									float curCost = costs[curZ][curX][curY];
+									//TODO вылет, потому что где-то до -1 доходит
 									int tmpK = 0;
 									int tmpN = 0;
 									int tmpC = 0;
@@ -227,7 +229,7 @@ public class PathFinder extends Thread {
 													tmpK = k;
 													tmpN = n;
 													tmpC = c;
-													curCost = costs[curZ][curX-1+k][curY-1+n];
+													curCost = costs[curZ-1+c][curX-1+k][curY-1+n];
 												}
 											}
 										}
@@ -286,7 +288,6 @@ public class PathFinder extends Thread {
 
 			now = null;
 			come_from = null;
-			//TODO нахождение пути фейлится
 			requester.pathFinderFailed();
 			requester = null;
 			calculating = false;
